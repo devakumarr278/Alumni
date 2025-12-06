@@ -1,0 +1,388 @@
+// Indian States and Colleges Data
+
+export const indianStates = [
+  'Andhra Pradesh',
+  'Arunachal Pradesh', 
+  'Assam',
+  'Bihar',
+  'Chhattisgarh',
+  'Goa',
+  'Gujarat',
+  'Haryana',
+  'Himachal Pradesh',
+  'Jharkhand',
+  'Karnataka',
+  'Kerala',
+  'Madhya Pradesh',
+  'Maharashtra',
+  'Manipur',
+  'Meghalaya',
+  'Mizoram',
+  'Nagaland',
+  'Odisha',
+  'Punjab',
+  'Rajasthan',
+  'Sikkim',
+  'Tamil Nadu',
+  'Telangana',
+  'Tripura',
+  'Uttar Pradesh',
+  'Uttarakhand',
+  'West Bengal',
+  'Delhi',
+  'Puducherry',
+  'Jammu and Kashmir',
+  'Ladakh'
+];
+
+export const collegesByState = {
+  'Tamil Nadu': [
+    'Indian Institute of Technology Madras',
+    'Anna University',
+    'Madras Institute of Technology',
+    'Sri Krishna College of Engineering and Technology',
+    'PSG College of Technology',
+    'Coimbatore Institute of Technology',
+    'Thiagarajar College of Engineering',
+    'National Institute of Technology Tiruchirappalli',
+    'Vellore Institute of Technology',
+    'SSN College of Engineering',
+    'Shanmugha Arts Science Technology & Research Academy',
+    'Kalasalingam Academy of Research and Education',
+    'SRM Institute of Science and Technology',
+    'Amrita Vishwa Vidyapeetham',
+    'Hindustan Institute of Technology and Science',
+    'St. Joseph College of Engineering',
+    'Easwari Engineering College',
+    'R.M.K. Engineering College',
+    'Rajalakshmi Engineering College',
+    'Sri Sivasubramaniya Nadar College of Engineering'
+  ],
+  'Karnataka': [
+    'Indian Institute of Science',
+    'Indian Institute of Technology Bangalore',
+    'National Institute of Technology Karnataka',
+    'Indian Institute of Management Bangalore',
+    'Bangalore Institute of Technology',
+    'M.S. Ramaiah Institute of Technology',
+    'R.V. College of Engineering',
+    'PES University',
+    'Christ University',
+    'Manipal Institute of Technology',
+    'B.M.S. College of Engineering',
+    'Sir M. Visvesvaraya Institute of Technology',
+    'Dayananda Sagar College of Engineering',
+    'New Horizon College of Engineering',
+    'Ramaiah University of Applied Sciences'
+  ],
+  'Maharashtra': [
+    'Indian Institute of Technology Bombay',
+    'Indian Institute of Technology Mumbai',
+    'Veermata Jijabai Technological Institute',
+    'College of Engineering Pune',
+    'Pune Institute of Computer Technology',
+    'Maharashtra Institute of Technology',
+    'Walchand College of Engineering',
+    'Government College of Engineering Pune',
+    'Sardar Patel Institute of Technology',
+    'K.J. Somaiya College of Engineering',
+    'D.J. Sanghvi College of Engineering',
+    'Thadomal Shahani Engineering College',
+    'Fr. Conceicao Rodrigues College of Engineering',
+    'Mumbai University Institute of Chemical Technology'
+  ],
+  'Delhi': [
+    'Indian Institute of Technology Delhi',
+    'Delhi Technological University',
+    'Netaji Subhas University of Technology',
+    'Indira Gandhi Delhi Technical University for Women',
+    'Jamia Millia Islamia',
+    'Delhi College of Engineering',
+    'Bharati Vidyapeeth College of Engineering',
+    'Guru Gobind Singh Indraprastha University',
+    'Maharaja Surajmal Institute of Technology',
+    'Northern India Engineering College'
+  ],
+  'Uttar Pradesh': [
+    'Indian Institute of Technology Kanpur',
+    'Indian Institute of Technology BHU Varanasi',
+    'Motilal Nehru National Institute of Technology',
+    'Harcourt Butler Technical University',
+    'Institute of Engineering and Technology',
+    'Bundelkhand Institute of Engineering and Technology',
+    'Galgotias University',
+    'ABES Engineering College',
+    'GL Bajaj Institute of Technology and Management',
+    'JSS Academy of Technical Education'
+  ],
+  'West Bengal': [
+    'Indian Institute of Technology Kharagpur',
+    'Jadavpur University',
+    'Indian Institute of Engineering Science and Technology',
+    'Bengal Engineering and Science University',
+    'National Institute of Technology Durgapur',
+    'Calcutta Institute of Engineering and Management',
+    'Heritage Institute of Technology',
+    'Techno India University',
+    'Kalyani Government Engineering College',
+    'Jalpaiguri Government Engineering College'
+  ],
+  'Telangana': [
+    'Indian Institute of Technology Hyderabad',
+    'National Institute of Technology Warangal',
+    'International Institute of Information Technology Hyderabad',
+    'Osmania University College of Engineering',
+    'Jawaharlal Nehru Technological University',
+    'Chaitanya Bharathi Institute of Technology',
+    'Vasavi College of Engineering',
+    'Gokaraju Rangaraju Institute of Engineering and Technology',
+    'CVR College of Engineering',
+    'Sreenidhi Institute of Science and Technology'
+  ],
+  'Andhra Pradesh': [
+    'Indian Institute of Technology Tirupati',
+    'National Institute of Technology Andhra Pradesh',
+    'Andhra University College of Engineering',
+    'Jawaharlal Nehru Technological University Kakinada',
+    'Sri Venkateswara University College of Engineering',
+    'Vignan Institute of Technology and Science',
+    'K L University',
+    'Anil Neerukonda Institute of Technology and Sciences',
+    'Gayatri Vidya Parishad College of Engineering',
+    'Dhanekula Institute of Engineering and Technology'
+  ],
+  'Gujarat': [
+    'Indian Institute of Technology Gandhinagar',
+    'National Institute of Technology Surat',
+    'Dhirubhai Ambani Institute of Information and Communication Technology',
+    'Sardar Vallabhbhai National Institute of Technology',
+    'L.D. College of Engineering',
+    'Government Engineering College Gandhinagar',
+    'Nirma University Institute of Technology',
+    'Charotar University of Science and Technology',
+    'Parul University',
+    'Gujarat Technological University'
+  ],
+  'Rajasthan': [
+    'Indian Institute of Technology Jodhpur',
+    'Malaviya National Institute of Technology Jaipur',
+    'Birla Institute of Technology and Science Pilani',
+    'University College of Engineering Rajasthan Technical University',
+    'Poornima College of Engineering',
+    'Arya College of Engineering and Information Technology',
+    'Swami Keshvanand Institute of Technology',
+    'Government Engineering College Ajmer',
+    'LNM Institute of Information Technology',
+    'Rajasthan Technical University'
+  ],
+  'Punjab': [
+    'Indian Institute of Technology Ropar',
+    'Thapar Institute of Engineering and Technology',
+    'Punjab Engineering College',
+    'Guru Nanak Dev Engineering College',
+    'Beant College of Engineering and Technology',
+    'Sant Longowal Institute of Engineering and Technology',
+    'Chandigarh Engineering College',
+    'DAV Institute of Engineering and Technology',
+    'CT Institute of Engineering Management and Technology',
+    'Lovely Professional University'
+  ],
+  'Haryana': [
+    'National Institute of Technology Kurukshetra',
+    'Deenbandhu Chhotu Ram University of Science and Technology',
+    'Guru Jambheshwar University of Science and Technology',
+    'Maharishi Dayanand University',
+    'Manav Rachna International Institute of Research and Studies',
+    'SRM University Haryana',
+    'Amity University Haryana',
+    'The NorthCap University',
+    'ITM University Gurgaon',
+    'Ansal University'
+  ],
+  'Kerala': [
+    'Indian Institute of Technology Palakkad',
+    'National Institute of Technology Calicut',
+    'College of Engineering Trivandrum',
+    'Government Engineering College Thrissur',
+    'Cochin University of Science and Technology',
+    'Mar Athanasius College of Engineering',
+    'Rajagiri School of Engineering and Technology',
+    'Federal Institute of Science and Technology',
+    'Saintgits College of Engineering',
+    'Amal Jyothi College of Engineering'
+  ],
+  'Odisha': [
+    'Indian Institute of Technology Bhubaneswar',
+    'National Institute of Technology Rourkela',
+    'Indian Institute of Information Technology Bhubaneswar',
+    'College of Engineering and Technology Bhubaneswar',
+    'Veer Surendra Sai University of Technology',
+    'Gandhi Institute for Technology',
+    'Institute of Technical Education and Research',
+    'Siksha O Anusandhan University',
+    'Kalinga Institute of Industrial Technology',
+    'C.V. Raman College of Engineering'
+  ],
+  'Assam': [
+    'Indian Institute of Technology Guwahati',
+    'National Institute of Technology Silchar',
+    'Assam Engineering College',
+    'Jorhat Engineering College',
+    'Tezpur University School of Engineering',
+    'Girijananda Chowdhury Institute of Management and Technology',
+    'Royal School of Engineering and Technology',
+    'Assam Science and Technology University',
+    'Don Bosco University',
+    'Kaziranga University'
+  ],
+  'Bihar': [
+    'Indian Institute of Technology Patna',
+    'National Institute of Technology Patna',
+    'Bihar Engineering University',
+    'Muzaffarpur Institute of Technology',
+    'Darbhanga College of Engineering',
+    'Gaya College of Engineering',
+    'Bhagalpur College of Engineering',
+    'Nalanda College of Engineering',
+    'Shershah Engineering College',
+    'Bakhtiyarpur College of Engineering'
+  ],
+  'Madhya Pradesh': [
+    'Indian Institute of Technology Indore',
+    'Maulana Azad National Institute of Technology',
+    'Indian Institute of Information Technology Design and Manufacturing',
+    'Shri Govindram Seksaria Institute of Technology and Science',
+    'University Institute of Technology RGPV',
+    'Oriental Institute of Science and Technology',
+    'Lakshmi Narain College of Technology',
+    'Acropolis Institute of Technology and Research',
+    'Institute of Engineering and Science IPS Academy',
+    'Medicaps University'
+  ],
+  'Jharkhand': [
+    'Indian Institute of Technology Dhanbad',
+    'National Institute of Technology Jamshedpur',
+    'Birla Institute of Technology Mesra',
+    'Central Institute of Technology Kokrajhar',
+    'University College of Engineering and Technology',
+    'Chaibasa Engineering College',
+    'Government Engineering College Chaibasa',
+    'Ramgovind Institute of Technology',
+    'Cambridge Institute of Technology',
+    'JIS College of Engineering'
+  ],
+  'Chhattisgarh': [
+    'National Institute of Technology Raipur',
+    'Indian Institute of Information Technology Naya Raipur',
+    'Government Engineering College Raipur',
+    'Bhilai Institute of Technology',
+    'Chhatrapati Shivaji Institute of Technology',
+    'Raipur Institute of Technology',
+    'Columbia Institute of Engineering and Technology',
+    'Kalinga University',
+    'SSTC SSGI',
+    'ITM University Raipur'
+  ],
+  'Goa': [
+    'National Institute of Technology Goa',
+    'Goa College of Engineering',
+    'Padre Conceicao College of Engineering',
+    'Don Bosco College of Engineering',
+    'Agnel Institute of Technology and Design',
+    'Goa Institute of Management',
+    'Birla Institute of Technology and Science Goa',
+    'Fr. Agnel College of Engineering',
+    'Shree Rayeshwar Institute of Engineering and Information Technology',
+    'Goa University'
+  ]
+};
+
+// Valid institutional email domains for Indian colleges
+export const validIndianDomains = [
+  '.edu',
+  '.ac.in',
+  '.edu.in',
+  '.ernet.in',
+  '.iisc.ac.in',
+  '.iit.ac.in',
+  '.nit.ac.in',
+  '.iiit.ac.in',
+  '.university.edu',
+  '.college.edu'
+];
+
+// Common departments across Indian colleges
+export const indianDepartments = [
+  'Computer Science and Engineering',
+  'Information Technology',
+  'Electronics and Communication Engineering',
+  'Electrical and Electronics Engineering',
+  'Mechanical Engineering',
+  'Civil Engineering',
+  'Chemical Engineering',
+  'Biotechnology',
+  'Biomedical Engineering',
+  'Automobile Engineering',
+  'Aerospace Engineering',
+  'Industrial Engineering',
+  'Instrumentation and Control Engineering',
+  'Marine Engineering',
+  'Mining Engineering',
+  'Petroleum Engineering',
+  'Textile Engineering',
+  'Food Technology',
+  'Agricultural Engineering',
+  'Environmental Engineering',
+  'Metallurgical Engineering',
+  'Production Engineering',
+  'Architecture',
+  'Planning',
+  'Mathematics',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'Microbiology',
+  'Biochemistry',
+  'Bioinformatics',
+  'Business Administration',
+  'Management Studies',
+  'Commerce',
+  'Economics',
+  'English Literature',
+  'Hindi Literature',
+  'Tamil Literature',
+  'Regional Literature',
+  'History',
+  'Geography',
+  'Political Science',
+  'Psychology',
+  'Sociology',
+  'Philosophy',
+  'Journalism and Mass Communication',
+  'Law',
+  'Fine Arts',
+  'Music',
+  'Dance',
+  'Physical Education'
+];
+
+// Years for passed out (graduation years)
+export const generateIndianYears = () => {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  
+  // From 2000 to current year + 4 (for future graduates)
+  for (let year = 2000; year <= currentYear + 4; year++) {
+    years.push(year);
+  }
+  
+  return years.reverse(); // Most recent first
+};
+
+export default { 
+  indianStates, 
+  collegesByState, 
+  validIndianDomains, 
+  indianDepartments, 
+  generateIndianYears 
+};
