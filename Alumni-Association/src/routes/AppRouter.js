@@ -56,6 +56,8 @@ import TestPage from '../pages/aluminilogin/TestPage';
 
 // Student dashboard components
 import StudentDashboard from '../pages/studentpart/index.jsx'; // Fixed import to explicitly reference index.jsx
+import CareerRoadmap from '../pages/studentpart/CareerRoadmap.jsx';
+
 
 // Student dashboard components
 import StudentProfile from '../pages/studentpart/StudentProfile'; // Updated to use the new component
@@ -211,7 +213,7 @@ const AppRouter = () => {
                     </div>
                     
                     <div className="bg-orange-50 p-4 rounded border border-orange-200">
-                      <h3 className="font-semibold text-orange-800 mb-2">Existing User:</h3>
+                      <h3 className="font-semibold text-orange-800 mb-2">Option 4:</h3>
                       <p><strong>Email:</strong> jane.alumni@gmail.com</p>
                       <p><strong>Password:</strong> Alumni123!</p>
                     </div>
@@ -253,28 +255,29 @@ const AppRouter = () => {
               </ProtectedRoute>
             }>
             {/* These routes will render inside AlumniLayoutNew via Outlet */}
-            <Route index element={<NewAlumniDashboard />} />
-            <Route path="dashboard" element={<NewAlumniDashboard />} />
-            <Route path="profile" element={<AlumniProfile />} />
-            <Route path="connections" element={<Connections />} />
-            <Route path="events" element={<MyEvents />} />
-            <Route path="posts" element={<Posts />} />
-            <Route path="mentorship" element={<Mentorship />} />
-            <Route path="mentorship/requests" element={<MentorshipRequests />} />
-            <Route path="mentorship/calendar" element={<MentorshipCalendar />} />
-            <Route path="mentorship/completed" element={<CompletedRequests />} />
-            <Route path="achievements" element={<Achievements />} />
-            <Route path="notifications" element={<NotificationsAlumni />} />
-            <Route path="directory" element={<AlumniStudentDirectory />} />
-            <Route path="jobs" element={<JobsReferrals />} />
-            <Route path="fundraising" element={<Fundraising />} />
-            <Route path="badges" element={<BadgesRecognition />} />
-            <Route path="follow-requests" element={<FollowRequestsPage />} />
-            <Route path="test-follow-requests" element={<TestFollowRequests />} />
-            <Route path="simple-test" element={<SimpleTest />} />
-            <Route path="component-test" element={<ComponentTest />} />
-            <Route path="test" element={<TestPage />} />
-
+            <>
+              <Route index element={<NewAlumniDashboard />} />
+              <Route path="dashboard" element={<NewAlumniDashboard />} />
+              <Route path="profile" element={<AlumniProfile />} />
+              <Route path="connections" element={<Connections />} />
+              <Route path="events" element={<MyEvents />} />
+              <Route path="posts" element={<Posts />} />
+              <Route path="mentorship" element={<Mentorship />} />
+              <Route path="mentorship/requests" element={<MentorshipRequests />} />
+              <Route path="mentorship/calendar" element={<MentorshipCalendar />} />
+              <Route path="mentorship/completed" element={<CompletedRequests />} />
+              <Route path="achievements" element={<Achievements />} />
+              <Route path="notifications" element={<NotificationsAlumni />} />
+              <Route path="directory" element={<AlumniStudentDirectory />} />
+              <Route path="jobs" element={<JobsReferrals />} />
+              <Route path="fundraising" element={<Fundraising />} />
+              <Route path="badges" element={<BadgesRecognition />} />
+              <Route path="follow-requests" element={<FollowRequestsPage />} />
+              <Route path="test-follow-requests" element={<TestFollowRequests />} />
+              <Route path="simple-test" element={<SimpleTest />} />
+              <Route path="component-test" element={<ComponentTest />} />
+              <Route path="test" element={<TestPage />} />
+            </>
           </Route>
           
           {/* Alternative alumni dashboard route for backward compatibility */}
@@ -323,6 +326,8 @@ const AppRouter = () => {
                       <Route path="badges" element={<StudentBadges />} />
                       <Route path="notifications" element={<StudentNotifications />} />
                       <Route path="pledges" element={<StudentPledges />} />
+                      <Route path="roadmap" element={<CareerRoadmap />} />
+
                       <Route path="test-profile" element={<TestProfile />} />
                     </Routes>
                   </StudentLayout>

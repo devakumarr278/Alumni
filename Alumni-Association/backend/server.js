@@ -80,8 +80,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Use a safe port (5005) instead of 5004 which might be in use
-const PORT = process.env.PORT || 5005;
+// Use a safe port (5001) instead of 5005 which might be in use
+const PORT = process.env.PORT || 5001;
 
 // Start server with fixed port
 server.listen(PORT, () => {
