@@ -176,6 +176,24 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Helper function to convert numeric year to text format
+  const convertYearToText = (year) => {
+    const currentYear = new Date().getFullYear();
+    const admissionYear = parseInt(year);
+    
+    if (isNaN(admissionYear)) return '';
+    
+    const yearDifference = currentYear - admissionYear + 1;
+    
+    switch (yearDifference) {
+      case 1: return '1st Year';
+      case 2: return '2nd Year';
+      case 3: return '3rd Year';
+      case 4: return '4th Year';
+      default: return `${yearDifference}th Year`;
+    }
+  };
+
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -299,8 +317,9 @@ const Register = () => {
         // Use registerNumber for students and rollNumber for alumni
         rollNumber: formData.role === USER_ROLES.STUDENT ? formData.registerNumber?.trim() : formData.rollNumber?.trim(),
         department: formData.department?.trim(),
-        graduationYear: formData.graduationYear,
-        currentYear: formData.yearOfAdmission,
+        // For students, map passingOutYear to graduationYear and convert yearOfAdmission to string format
+        graduationYear: formData.role === USER_ROLES.STUDENT ? parseInt(formData.passingOutYear) : parseInt(formData.graduationYear),
+        currentYear: formData.role === USER_ROLES.STUDENT ? convertYearToText(formData.yearOfAdmission) : formData.yearOfAdmission,
         phone: formData.mobileNumber?.trim(),
         currentPosition: formData.roleInCompany?.trim(),
         company: formData.companyName?.trim(),

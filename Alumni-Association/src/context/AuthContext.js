@@ -66,7 +66,7 @@ export function AuthProvider({ children }) {
       setLoading(true);
       
       // Actual API call for login
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/login`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,16 @@ export function AuthProvider({ children }) {
       // Check if response is ok before parsing
       if (!response.ok) {
         console.error('Login response not ok:', response.status, response.statusText);
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Try to get error message from response
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          // If we can't parse JSON, use the status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
       
       const data = await response.json();
@@ -105,7 +114,6 @@ export function AuthProvider({ children }) {
         
         // Map backend user data to frontend format
         // Convert backend 'admin' userType to frontend 'institution' role
-        // Fix: The backend sends token and user directly, not nested in data property
         const userRole = data.data.userType === 'admin' ? 'institution' : data.data.userType;
         
         const userData = {
@@ -118,7 +126,7 @@ export function AuthProvider({ children }) {
         localStorage.setItem('user', JSON.stringify(userData));
         
         // Store token if provided
-        // Fix: The backend sends token directly, not nested in data property
+        // The backend sends token directly in the response
         if (data.token) {
           localStorage.setItem('token', data.token);
         }
@@ -177,7 +185,7 @@ export function AuthProvider({ children }) {
       if (registrationData.role === USER_ROLES.STUDENT) {
         backendData.rollNumber = registrationData.rollNumber?.trim(); // Already mapped in Register_new.js
         backendData.department = registrationData.department?.trim();
-        backendData.currentYear = parseInt(registrationData.currentYear); // Already mapped in Register_new.js
+        backendData.currentYear = registrationData.currentYear; // Should be a string like "1st Year", "2nd Year", etc.
         backendData.graduationYear = parseInt(registrationData.graduationYear); // Already mapped in Register_new.js
         backendData.phone = registrationData.phone?.trim(); // Already mapped in Register_new.js
       } else if (registrationData.role === USER_ROLES.ALUMNI) {
@@ -204,7 +212,7 @@ export function AuthProvider({ children }) {
       console.log('Mapped backend data:', backendData);
       
       // Call the actual backend API for registration
-      const apiUrl = `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/register`;
+      const apiUrl = `${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/register`;
       console.log('Making request to:', apiUrl);
       console.log('Request data:', JSON.stringify(backendData, null, 2));
       
@@ -287,7 +295,7 @@ export function AuthProvider({ children }) {
       // Check if the verificationCode is a 6-digit number (OTP) or a token (link)
       if (/^\d{6}$/.test(verificationCode)) {
         // It's an OTP code, use the new OTP verification endpoint
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/verify-email-code`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/verify-email-code`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -361,7 +369,7 @@ export function AuthProvider({ children }) {
         }
       } else {
         // It's a token/link verification, use the existing endpoint
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/verify-email?token=${verificationCode}&email=${pendingRegistration.email}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/verify-email?token=${verificationCode}&email=${pendingRegistration.email}`);
         
         const data = await response.json();
         console.log('Email verification response:', data);
@@ -458,11 +466,13 @@ export function AuthProvider({ children }) {
     let emailToSend = pendingRegistration.email;
     
     // If email is not directly available, check role-specific fields
+    // Note: pendingRegistration uses userType (from backend) rather than role (frontend)
     if (!emailToSend) {
-      if (pendingRegistration.role === USER_ROLES.ALUMNI) {
+      const userType = pendingRegistration.userType || pendingRegistration.role;
+      if (userType === USER_ROLES.ALUMNI || userType === 'alumni') {
         emailToSend = pendingRegistration.personalEmail;
       } else {
-        emailToSend = pendingRegistration.institutionalEmail;
+        emailToSend = pendingRegistration.institutionalEmail || pendingRegistration.email;
       }
     }
     
@@ -477,7 +487,7 @@ export function AuthProvider({ children }) {
     
     try {
       // Call the actual backend API to resend verification email
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/resend-verification`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/resend-verification`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
