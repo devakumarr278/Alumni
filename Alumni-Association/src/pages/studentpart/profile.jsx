@@ -6,6 +6,7 @@ import { extractSkills } from './utils/skillExtractor';
 import { COMMON_INTERESTS, getRandomInterests } from './utils/interests';
 import { BadgeList } from '../../components/Badge';
 import BadgeVerificationRequest from './components/BadgeVerificationRequest';
+import { motion } from 'framer-motion';
 
 const StudentProfile = () => {
   // Always call hooks at the top level
@@ -508,8 +509,47 @@ const StudentProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="lg:flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+      {/* Enhanced Animated Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-50 via-purple-50 to-cyan-50"></div>
+        
+        {/* Floating Gradient Orbs */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-100/20 to-transparent rounded-bl-full animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-1/4 h-1/3 bg-gradient-to-t from-purple-100/30 to-transparent rounded-tr-full animate-pulse"></div>
+        
+        {/* Floating Elements */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-cyan-200/15 to-blue-200/15 rounded-full blur-3xl animate-bounce" style={{animationDuration: '8s'}}></div>
+        <div className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-gradient-to-r from-purple-200/15 to-pink-200/15 rounded-full blur-3xl animate-bounce" style={{animationDuration: '10s', animationDelay: '1s'}}></div>
+      </div>
+      
+      {/* Enhanced Floating Particles */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <motion.div 
+            key={i}
+            className="absolute rounded-full bg-gradient-to-r from-blue-400/10 to-purple-400/10"
+            style={{
+              width: `${Math.random() * 20 + 5}px`,
+              height: `${Math.random() * 20 + 5}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              x: [0, Math.random() * 20 - 10, 0],
+              opacity: [0.2, 0.5, 0.2],
+            }}
+            transition={{
+              duration: Math.random() * 3 + 2,
+              repeat: Infinity,
+              delay: i * 0.2,
+            }}
+          />
+        ))}
+      </div>
+      
+      <div className="lg:flex relative z-10">
         {/* Removed StudentNavigation as it's handled by the shared layout */}
         
         {/* Hidden file input for photo upload */}
@@ -524,91 +564,120 @@ const StudentProfile = () => {
         {/* Main content */}
         <div className="flex-1 p-6">
           <div className="max-w-6xl mx-auto space-y-8">
-            {/* Profile Header with Minimal Design */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 relative">
-              {/* Minimal header with subtle accent line */}
-              <div className="h-16 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+            {/* Enhanced Profile Header with Glass Effect */}
+            <motion.div 
+              className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 relative overflow-hidden"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Enhanced header with gradient background and animated elements */}
+              <div className="h-24 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/15 rounded-full -translate-y-16 translate-x-16 animate-pulse"></div>
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/15 rounded-full translate-y-12 -translate-x-12 animate-pulse"></div>
                 <div className="absolute inset-0 bg-black bg-opacity-10"></div>
               </div>
-              <div className="border-b border-gray-200"></div>
+              <div className="border-b border-gray-200/70"></div>
               
               {/* Profile Info */}
               <div className="px-6 py-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                   <div className="flex items-center">
-                    {/* Profile Photo */}
+                    {/* Enhanced Profile Photo with Glass Effect */}
                     <div className="relative group">
                       {profilePhoto ? (
                         <img 
                           src={profilePhoto} 
                           alt="Profile" 
-                          className="w-24 h-24 rounded-full object-cover border-2 border-white shadow-sm"
+                          className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-xl ring-4 ring-white/50"
                         />
                       ) : (
-                        <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-white text-2xl font-bold border-2 border-white shadow-sm">
+                        <motion.div 
+                          className="w-28 h-28 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-3xl font-extrabold border-4 border-white shadow-xl ring-4 ring-white/50 transform transition-transform duration-300 hover:scale-105"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
                           {getInitials(contextValue?.studentData?.profile?.name)}
-                        </div>
+                        </motion.div>
                       )}
                       
-                      {/* Hover effect for photo options */}
+                      {/* Enhanced hover effect for photo options with Glass Effect */}
                       <div 
-                        className="absolute inset-0 rounded-full bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        className="absolute inset-0 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer shadow-lg"
                         onClick={() => fileInputRef.current.click()}
                       >
-                        <div className="text-white text-center">
+                        <div className="text-white text-center bg-black/30 backdrop-blur-sm rounded-full p-3 transform transition-all duration-300 hover:scale-110">
                           <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                           </svg>
-                          <span className="text-xs mt-1">Change</span>
+                          <span className="text-xs mt-1 font-bold">Change</span>
                         </div>
                       </div>
                     </div>
                     
-                    {/* Name and Details */}
+                    {/* Enhanced Name and Details with Glass Effect */}
                     <div className="ml-6">
-                      <h1 className="text-2xl font-bold text-gray-900">
+                      <motion.h1 
+                        className="text-3xl font-extrabold text-gray-900 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                      >
                         {realProfileData 
                           ? `${realProfileData.firstName || ''} ${realProfileData.lastName || ''}`.trim() 
                           : (contextValue?.studentData?.profile?.name || 'Student Name')}
-                      </h1>
-                      <input
+                      </motion.h1>
+                      <motion.input
                         type="text"
                         value={personalQuote}
                         onChange={handleQuoteChange}
                         placeholder="Add your personal quote or motto..."
-                        className="mt-1 text-gray-600 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none w-full max-w-md"
+                        className="mt-2 text-gray-700 bg-transparent border-b-2 border-transparent hover:border-gray-400 focus:border-blue-500 focus:outline-none w-full max-w-md font-medium text-lg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
                       />
-                      <div className="mt-2 text-gray-600">
-                        <p>
+                      <motion.div 
+                        className="mt-3 text-gray-700 space-y-1"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6 }}
+                      >
+                        <p className="font-medium">
                           {realProfileData 
                             ? realProfileData.email 
                             : (contextValue?.studentData?.profile?.email || 'student@college.edu')}
                         </p>
-                        <p>
+                        <p className="font-medium">
                           {realProfileData 
                             ? `${realProfileData.department || 'Major'} • ${realProfileData.graduationYear || 'Year'}`
                             : `${contextValue?.studentData?.profile?.major || 'Major'} • ${contextValue?.studentData?.profile?.graduationYear || 'Year'}`}
                         </p>
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
                   
-                  {/* Floating Edit Profile Button */}
-                  <div className="mt-4 md:mt-0 relative">
+                  {/* Enhanced Floating Edit Profile Button with Glass Effect */}
+                  <motion.div 
+                    className="mt-4 md:mt-0 relative"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
                     <button 
                       ref={editButtonRef}
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowEditDropdown(!showEditDropdown);
                       }}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium flex items-center shadow-sm hover:shadow-md transition-shadow"
+                      className="px-5 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 text-base font-bold flex items-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
                     >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
                       Edit Profile
-                      <svg className={`w-4 h-4 ml-2 transition-transform ${showEditDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className={`w-5 h-5 ml-2 transition-transform duration-300 ${showEditDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
@@ -646,77 +715,94 @@ const StudentProfile = () => {
                         </button>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Gamification Progress */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            {/* Enhanced Gamification Progress with Glass Effect */}
+            <motion.div 
+              className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Member Level</h2>
-                <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                <h2 className="text-2xl font-extrabold text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Member Level</h2>
+                <span className="px-4 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 rounded-full text-base font-bold shadow-sm">
                   {gamification.level} Member
                 </span>
               </div>
               
-              <div className="mb-2">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
+              <div className="mb-3">
+                <div className="flex justify-between text-base font-medium text-gray-700 mb-2">
                   <span>Progress to {gamification.nextLevel} Member</span>
                   <span>{gamification.progress}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div 
-                    className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2.5 rounded-full" 
+                <div className="w-full bg-gray-200/70 rounded-full h-3 shadow-inner">
+                  <motion.div 
+                    className="bg-gradient-to-r from-yellow-400 to-orange-500 h-3 rounded-full shadow-md" 
                     style={{ width: `${gamification.progress}%` }}
-                  ></div>
+                    initial={{ width: 0 }}
+                    animate={{ width: `${gamification.progress}%` }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                  ></motion.div>
                 </div>
               </div>
               
-              <div className="flex items-center text-sm text-gray-600">
+              <div className="flex items-center text-base font-medium text-gray-700">
                 <span className="mr-4">Badges: {gamification.badgesEarned}/{gamification.totalBadges}</span>
-                <span>🚀 {100 - gamification.progress}% to go!</span>
+                <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">🚀 {100 - gamification.progress}% to go!</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Progress Tracker Widget */}
 
-            {/* Profile Form - Only shown when editing */}
+            {/* Enhanced Profile Form with Glass Effect - Only shown when editing */}
             {isEditing && (
-              <div className="bg-white rounded-lg shadow-sm border border-blue-500 p-6 relative">
+              <motion.div 
+                className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-blue-500/70 p-6 relative"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-semibold text-blue-600">Edit Profile Information</h2>
+                  <h2 className="text-3xl font-extrabold text-blue-600 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Edit Profile Information</h2>
                   <button 
                     onClick={() => setIsEditing(false)}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100/80 transition-all duration-300"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 </div>
                 
                 {saveMessage && (
-                  <div className={`mb-4 p-3 rounded-md text-sm ${
-                    saveMessage.includes('Error') 
-                      ? 'bg-red-50 text-red-700 border border-red-200'
-                      : 'bg-green-50 text-green-700 border border-green-200'
-                  }`}>
+                  <motion.div 
+                    className={`mb-4 p-4 rounded-xl text-base font-medium ${
+                      saveMessage.includes('Error') 
+                        ? 'bg-red-50/90 text-red-800 border border-red-200/70 backdrop-blur-sm shadow-sm'
+                        : 'bg-green-50/90 text-green-800 border border-green-200/70 backdrop-blur-sm shadow-sm'
+                    }`}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
                     {saveMessage}
-                  </div>
+                  </motion.div>
                 )}
                 
                 <form onSubmit={handleSubmit}>
-                  <div className="space-y-4">
+                  <div className="space-y-5">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Name *</label>
+                      <label className="block text-base font-bold text-gray-800 mb-2">Name *</label>
                       <input 
                         type="text" 
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" 
+                        className="mt-1 block w-full border border-gray-300 rounded-xl p-3 focus:ring-blue-500 focus:border-blue-500 shadow-sm focus:shadow-md transition-all duration-300" 
                         placeholder="Enter your full name"
                       />
                     </div>
@@ -820,7 +906,13 @@ const StudentProfile = () => {
                       <label className="block text-sm font-medium text-gray-700">Skills</label>
                       <div className="mt-1 flex flex-wrap gap-2 mb-2">
                         {formData.skills.map((skill, index) => (
-                          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <motion.span 
+                            key={index} 
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.1 }}
+                          >
                             {skill}
                             <button
                               type="button"
@@ -829,7 +921,7 @@ const StudentProfile = () => {
                             >
                               ×
                             </button>
-                          </span>
+                          </motion.span>
                         ))}
                       </div>
                       <div className="flex gap-2">
@@ -856,15 +948,17 @@ const StudentProfile = () => {
                           <p className="text-xs text-gray-500 mb-1">Suggested skills:</p>
                           <div className="flex flex-wrap gap-1">
                             {suggestedSkills.map((skill, index) => (
-                              <button
+                              <motion.button
                                 key={index}
                                 type="button"
                                 onClick={() => addSuggestedSkill(skill)}
                                 className="text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full"
                                 disabled={formData.skills.includes(skill)}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                               >
                                 {skill}
-                              </button>
+                              </motion.button>
                             ))}
                           </div>
                         </div>
@@ -922,7 +1016,13 @@ const StudentProfile = () => {
                       <label className="block text-sm font-medium text-gray-700">Interests</label>
                       <div className="mt-1 flex flex-wrap gap-2 mb-2">
                         {formData.interests.map((interest, index) => (
-                          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <motion.span 
+                            key={index} 
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.1 }}
+                          >
                             {interest}
                             <button
                               type="button"
@@ -931,7 +1031,7 @@ const StudentProfile = () => {
                             >
                               ×
                             </button>
-                          </span>
+                          </motion.span>
                         ))}
                       </div>
                       <div className="flex gap-2">
@@ -958,15 +1058,17 @@ const StudentProfile = () => {
                           <p className="text-xs text-gray-500 mb-1">Suggested interests:</p>
                           <div className="flex flex-wrap gap-1">
                             {suggestedInterests.map((interest, index) => (
-                              <button
+                              <motion.button
                                 key={index}
                                 type="button"
                                 onClick={() => addSuggestedInterest(interest)}
                                 className="text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full"
                                 disabled={formData.interests.includes(interest)}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                               >
                                 {interest}
-                              </button>
+                              </motion.button>
                             ))}
                           </div>
                         </div>
@@ -1049,14 +1151,19 @@ const StudentProfile = () => {
                     </div>
                   </div>
                 </form>
-              </div>
+              </motion.div>
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column */}
               <div className="lg:col-span-2 space-y-8 flex flex-col">
                 {/* Badges Section */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-grow">
+                <motion.div 
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-grow"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold">Your Badges</h2>
                     <div className="text-sm text-gray-600">
@@ -1067,9 +1174,13 @@ const StudentProfile = () => {
                   {userBadges.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
                       {userBadges.map((badge, index) => (
-                        <div 
+                        <motion.div 
                           key={index} 
                           className="border border-gray-200 rounded-lg p-4 text-center hover:shadow-md transition-shadow relative group"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          whileHover={{ y: -5 }}
                         >
                           <div className="text-3xl mb-2">{badge.icon || '🏅'}</div>
                           <div className="font-medium text-sm">{badge.name || 'Badge'}</div>
@@ -1083,19 +1194,22 @@ const StudentProfile = () => {
                             <div className="mt-1">{badge.description || 'Achievement badge'}</div>
                             <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                           </div>
-                        </div>
+                        </motion.div>
                       ))}
                       
                       {/* Locked badges as placeholders */}
                       {Array.from({ length: 8 - Math.min(userBadges.length, 8) }).map((_, index) => (
-                        <div 
+                        <motion.div 
                           key={`locked-${index}`} 
                           className="border border-gray-200 rounded-lg p-4 text-center bg-gray-50 opacity-50"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: index * 0.1 }}
                         >
                           <div className="text-3xl mb-2">🔒</div>
                           <div className="font-medium text-sm text-gray-500">Locked</div>
                           <div className="text-xs text-gray-400 mt-1">Earn more</div>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
                   ) : (
@@ -1140,14 +1254,25 @@ const StudentProfile = () => {
                       Test button to simulate completing a mentorship session. Complete 3 sessions to earn "Mentor Ready" badge.
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Activity Timeline */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col flex-grow">
+                <motion.div 
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col flex-grow"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
                   <h2 className="text-xl font-semibold mb-4">Your Activity</h2>
                   <div className="space-y-4 flex-grow">
                     {activityTimeline.map((activity) => (
-                      <div key={activity.id} className="flex">
+                      <motion.div 
+                        key={activity.id} 
+                        className="flex"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: activity.id * 0.1 }}
+                      >
                         <div className="flex flex-col items-center mr-4">
                           <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                             <span className="text-lg">{activity.icon}</span>
@@ -1161,7 +1286,7 @@ const StudentProfile = () => {
                           <p className="text-sm text-gray-600">{activity.description}</p>
                           <p className="text-xs text-gray-500 mt-1">{activity.date}</p>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                   <div className="mt-4 pt-4 border-t border-gray-200">
@@ -1169,13 +1294,18 @@ const StudentProfile = () => {
                       View All Activity
                     </button>
                   </div>
-                </div>
+                </motion.div>
               </div>
 
               {/* Right Column */}
               <div className="space-y-8 flex flex-col">
                 {/* Connections Summary */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-grow">
+                <motion.div 
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-grow"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
                   <h2 className="text-xl font-semibold mb-4">Your Network</h2>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -1219,7 +1349,13 @@ const StudentProfile = () => {
                         {(realProfileData?.connections?.recent || contextValue?.studentData?.connections?.recent || [])
                           .slice(0, 3)
                           .map((connection, index) => (
-                            <div key={index} className="flex items-center">
+                            <motion.div 
+                              key={index} 
+                              className="flex items-center"
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                            >
                               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
                                 <span className="text-xs font-medium text-blue-800">
                                   {connection.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'CN'}
@@ -1234,7 +1370,7 @@ const StudentProfile = () => {
                                   ? new Date(connection.connectedDate).toLocaleDateString() 
                                   : 'Date'}
                               </span>
-                            </div>
+                            </motion.div>
                           ))}
                       </div>
                     </div>
@@ -1246,10 +1382,15 @@ const StudentProfile = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Suggested Mentors based on interests and skills */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-grow">
+                <motion.div 
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex-grow"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                >
                   <h2 className="text-xl font-semibold mb-4">Suggested Mentors</h2>
                   <div className="space-y-4">
                     {/* Suggested mentors based on user interests and skills */}
@@ -1330,7 +1471,7 @@ const StudentProfile = () => {
                       </div>
                     )}
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
 
@@ -1342,22 +1483,4 @@ const StudentProfile = () => {
                     <h3 className="text-lg font-semibold">Request Badge Verification</h3>
                     <button 
                       onClick={() => document.getElementById('badge-verification-modal').classList.add('hidden')}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                  <BadgeVerificationRequest />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default StudentProfile;
+                      className="
