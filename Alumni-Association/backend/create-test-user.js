@@ -52,7 +52,7 @@ db.once('open', async () => {
       firstName: 'Test',
       lastName: 'Alumni',
       email: 'test.alumni@gmail.com',
-      password: hashedPassword,
+      password: 'Test1234!',  // Let the model hash this (8+ chars)
       userType: 'alumni',
       status: 'approved', // Set to approved for testing
       collegeName: 'Sri Krishna College of Engineering and Technology',
@@ -79,7 +79,7 @@ db.once('open', async () => {
       firstName: 'Test',
       lastName: 'Student',
       email: 'test.student@skcet.ac.in',
-      password: studentPassword,
+      password: 'Test1234!',  // Let the model hash this (8+ chars)
       userType: 'student',
       status: 'approved',
       collegeName: 'Sri Krishna College of Engineering and Technology',
