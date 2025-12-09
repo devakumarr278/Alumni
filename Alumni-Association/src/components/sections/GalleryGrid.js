@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Photo1 from '../../assets/images/gallery/awards.png';
 import Photo2 from '../../assets/images/gallery/gala.png';

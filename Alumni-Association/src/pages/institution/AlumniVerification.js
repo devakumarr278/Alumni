@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const MockAlumniVerification = () => {
   const [selectedAlumni, setSelectedAlumni] = useState(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   const [darkMode, setDarkMode] = useState(false);
@@ -98,11 +98,11 @@ const MockAlumniVerification = () => {
 
   const handleAlumniClick = (alumni) => {
     setSelectedAlumni(alumni);
-    setIsDrawerOpen(true);
+    setIsPanelOpen(true);
   };
 
-  const closeDrawer = () => {
-    setIsDrawerOpen(false);
+  const closePanel = () => {
+    setIsPanelOpen(false);
     setSelectedAlumni(null);
   };
 
@@ -144,7 +144,7 @@ const MockAlumniVerification = () => {
         fetchPendingAlumni();
         
         // Close the drawer
-        closeDrawer();
+        closePanel();
         
         // Show success message
         alert(`Alumni ${decision === 'approve' ? 'approved' : 'rejected'} successfully!`);
@@ -307,7 +307,7 @@ const MockAlumniVerification = () => {
           ))}
         </div>
 
-        {/* AI Verification Queue */}
+        {/* AI Verification Queue - Updated with card-based interface */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -328,12 +328,10 @@ const MockAlumniVerification = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredAlumni.map((alumni, index) => (
-                  <motion.div
+                  <div 
+                    className={`rounded-2xl border p-5 transition-all hover:shadow-lg cursor-pointer ${darkMode ? 'bg-gray-700 border-gray-600 hover:bg-gray-600' : 'bg-white border-gray-200 hover:bg-gray-50'}`}
                     key={alumni._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className={`rounded-2xl border p-5 transition-all hover:shadow-lg ${darkMode ? 'bg-gray-700 border-gray-600 hover:bg-gray-600' : 'bg-white border-gray-200 hover:bg-gray-50'}`}
+                    onClick={() => handleAlumniClick(alumni)}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center">
@@ -370,16 +368,23 @@ const MockAlumniVerification = () => {
                     
                     <div className="mt-4 flex space-x-2">
                       <button
-                        onClick={() => handleAlumniClick(alumni)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVerifyAlumni(alumni._id, 'approve');
+                        }}
                         className={`flex-1 text-xs py-1.5 rounded-lg font-medium transition-colors ${
                           darkMode 
                             ? 'bg-indigo-700 text-white hover:bg-indigo-600' 
                             : 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200'
                         }`}
                       >
-                        View Details
+                        Approve
                       </button>
                       <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVerifyAlumni(alumni._id, 'reject');
+                        }}
                         className={`flex-1 text-xs py-1.5 rounded-lg font-medium transition-colors ${
                           alumni.status === 'approved'
                             ? (darkMode ? 'bg-green-700 text-white hover:bg-green-600' : 'bg-green-100 text-green-800 hover:bg-green-200')
@@ -392,7 +397,7 @@ const MockAlumniVerification = () => {
                          alumni.status === 'rejected' ? 'Rejected' : 'Review'}
                       </button>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             )}
@@ -449,10 +454,10 @@ const MockAlumniVerification = () => {
           </div>
         </motion.div>
 
-        {/* AI Verification Detail Drawer */}
-        {isDrawerOpen && selectedAlumni && (
+        {/* Slide-in Details Panel - Updated to show alumni profile */}
+        {isPanelOpen && selectedAlumni && (
           <div className="fixed inset-0 z-50 overflow-hidden">
-            <div className="absolute inset-0 bg-black bg-opacity-50" onClick={closeDrawer}></div>
+            <div className="absolute inset-0 bg-black bg-opacity-50" onClick={closePanel}></div>
             <div className="absolute inset-y-0 right-0 max-w-full flex">
               <motion.div
                 initial={{ x: '100%' }}
@@ -465,9 +470,9 @@ const MockAlumniVerification = () => {
                   <div className="flex-1 overflow-y-auto">
                     <div className="px-4 py-6 sm:px-6">
                       <div className="flex items-start justify-between">
-                        <h2 className={`text-lg font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Verification Details</h2>
+                        <h2 className={`text-lg font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Alumni Profile</h2>
                         <button
-                          onClick={closeDrawer}
+                          onClick={closePanel}
                           className={`ml-3 h-7 flex items-center justify-center rounded-full focus:outline-none ${
                             darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
                           }`}
@@ -498,87 +503,37 @@ const MockAlumniVerification = () => {
                           </div>
                         </div>
                         
-                        {/* Verification Score */}
-                        {selectedAlumni.aiScore && (
-                          <div className="mt-6">
-                            <div className="flex justify-between items-center">
-                              <h4 className={`text-md font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Verification Score</h4>
-                              <span className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{selectedAlumni.aiScore}%</span>
-                            </div>
-                            <div className={`mt-2 w-full bg-gray-200 rounded-full h-4 ${darkMode ? 'bg-gray-600' : ''}`}>
-                              <div 
-                                className={`h-4 rounded-full ${
-                                  selectedAlumni.aiScore >= 90 ? 'bg-green-500' :
-                                  selectedAlumni.aiScore >= 70 ? 'bg-yellow-500' :
-                                  'bg-red-500'
-                                }`} 
-                                style={{ width: `${selectedAlumni.aiScore}%` }}
-                              ></div>
-                            </div>
-                            <div className="flex justify-between text-xs text-gray-500 mt-1">
-                              <span>0%</span>
-                              <span>50%</span>
-                              <span>100%</span>
-                            </div>
-                          </div>
-                        )}
-                        
-                        {/* Verification Breakdown */}
+                        {/* Alumni Information */}
                         <div className="mt-6">
-                          <h4 className={`text-md font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Verification Breakdown</h4>
+                          <h4 className={`text-md font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>Profile Information</h4>
                           <div className="mt-3 space-y-3">
-                            <div>
-                              <div className="flex justify-between text-sm">
-                                <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Data Match</span>
-                                <span className="font-medium">94%</span>
-                              </div>
-                              <div className={`mt-1 w-full bg-gray-200 rounded-full h-2 ${darkMode ? 'bg-gray-600' : ''}`}>
-                                <div className="bg-green-500 h-2 rounded-full" style={{ width: '94%' }}></div>
-                              </div>
+                            <div className="flex justify-between">
+                              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>College</span>
+                              <span className="font-medium">{selectedAlumni.collegeName || 'Not provided'}</span>
                             </div>
-                            <div>
-                              <div className="flex justify-between text-sm">
-                                <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Document Match</span>
-                                <span className="font-medium">90%</span>
-                              </div>
-                              <div className={`mt-1 w-full bg-gray-200 rounded-full h-2 ${darkMode ? 'bg-gray-600' : ''}`}>
-                                <div className="bg-green-500 h-2 rounded-full" style={{ width: '90%' }}></div>
-                              </div>
+                            <div className="flex justify-between">
+                              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Department</span>
+                              <span className="font-medium">{selectedAlumni.department || 'Not provided'}</span>
                             </div>
-                            <div>
-                              <div className="flex justify-between text-sm">
-                                <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Email Pattern</span>
-                                <span className="font-medium">100%</span>
-                              </div>
-                              <div className={`mt-1 w-full bg-gray-200 rounded-full h-2 ${darkMode ? 'bg-gray-600' : ''}`}>
-                                <div className="bg-green-500 h-2 rounded-full" style={{ width: '100%' }}></div>
-                              </div>
+                            <div className="flex justify-between">
+                              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Graduation Year</span>
+                              <span className="font-medium">{selectedAlumni.graduationYear || 'Not provided'}</span>
                             </div>
-                            <div>
-                              <div className="flex justify-between text-sm">
-                                <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Network Confirmation</span>
-                                <span className="font-medium">80%</span>
-                              </div>
-                              <div className={`mt-1 w-full bg-gray-200 rounded-full h-2 ${darkMode ? 'bg-gray-600' : ''}`}>
-                                <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '80%' }}></div>
-                              </div>
+                            <div className="flex justify-between">
+                              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Roll Number</span>
+                              <span className="font-medium">{selectedAlumni.rollNumber || 'Not provided'}</span>
                             </div>
-                          </div>
-                          
-                          {/* Summary */}
-                          <div className={`mt-6 p-4 rounded-lg ${darkMode ? 'bg-indigo-900' : 'bg-indigo-50'}`}>
-                            <div className="flex">
-                              <div className="flex-shrink-0">
-                                <svg className={`h-5 w-5 ${darkMode ? 'text-indigo-300' : 'text-indigo-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                              </div>
-                              <div className="ml-3">
-                                <h3 className={`text-sm font-medium ${darkMode ? 'text-indigo-200' : 'text-indigo-800'}`}>Verification Summary</h3>
-                                <div className={`mt-2 text-sm ${darkMode ? 'text-indigo-100' : 'text-indigo-700'}`}>
-                                  <p>High confidence match – name and graduation year verified.</p>
-                                </div>
-                              </div>
+                            <div className="flex justify-between">
+                              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Company</span>
+                              <span className="font-medium">{selectedAlumni.company || 'Not provided'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Location</span>
+                              <span className="font-medium">{selectedAlumni.location || 'Not provided'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Registration Status</span>
+                              <span className="font-medium capitalize">{selectedAlumni.status || 'Not provided'}</span>
                             </div>
                           </div>
                         </div>
@@ -589,7 +544,10 @@ const MockAlumniVerification = () => {
                   <div className={`border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} px-4 py-4 sm:px-6`}>
                     <div className="flex space-x-3">
                       <button
-                        onClick={() => handleVerifyAlumni(selectedAlumni._id, 'approve')}
+                        onClick={() => {
+                          handleVerifyAlumni(selectedAlumni._id, 'approve');
+                          closePanel();
+                        }}
                         className={`flex-1 px-4 py-2 rounded-lg font-medium text-sm ${
                           darkMode ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-green-600 text-white hover:bg-green-700'
                         }`}
@@ -597,7 +555,10 @@ const MockAlumniVerification = () => {
                         Approve
                       </button>
                       <button
-                        onClick={() => handleVerifyAlumni(selectedAlumni._id, 'reject')}
+                        onClick={() => {
+                          handleVerifyAlumni(selectedAlumni._id, 'reject');
+                          closePanel();
+                        }}
                         className={`flex-1 px-4 py-2 rounded-lg font-medium text-sm ${
                           darkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-600 text-white hover:bg-red-700'
                         }`}
