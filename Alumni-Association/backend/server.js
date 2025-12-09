@@ -5,6 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const http = require('http');
+const path = require('path');
 
 const app = express();
 
@@ -18,6 +19,8 @@ const alumniRoutes = require('./routes/alumni');
 const followRoutes = require('./routes/follow');
 const notificationRoutes = require('./routes/notification');
 const slotRoutes = require('./routes/slots');
+const analyticsRoutes = require('./routes/analytics');
+const postRoutes = require('./routes/posts');
 
 // Import WebSocket server
 const WebSocketServer = require('./webSocketServer');
@@ -34,6 +37,9 @@ app.use(cors({
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Logging middleware
 app.use(morgan('combined'));
@@ -56,6 +62,9 @@ app.use('/api/alumni', alumniRoutes);
 app.use('/api/follow', followRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/slots', slotRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/posts', postRoutes);
+console.log('Posts routes mounted at /api/posts');
 console.log('Routes set up successfully');
 console.log('Auth routes mounted at /api/auth');
 console.log('Institution routes mounted at /api/institution');
@@ -63,6 +72,7 @@ console.log('Alumni routes mounted at /api/alumni');
 console.log('Follow routes mounted at /api/follow');
 console.log('Notification routes mounted at /api/notifications');
 console.log('Slot routes mounted at /api/slots');
+console.log('Analytics routes mounted at /api/analytics');
 
 // Simple test route (moved after auth routes)
 app.get('/test', (req, res) => {
@@ -80,8 +90,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Use a safe port (5005) instead of 5004 which might be in use
-const PORT = process.env.PORT || 5005;
+// Use port 5003 to avoid conflicts
+const PORT = process.env.PORT || 5003;
 
 // Start server with fixed port
 server.listen(PORT, () => {
