@@ -1,83 +1,117 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
 import { motion } from 'framer-motion';
-import { 
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, 
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
-} from 'recharts';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
+import api from '../../utils/api';
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 const Analytics = () => {
   const [timeRange, setTimeRange] = useState('monthly');
+  const [analyticsData, setAnalyticsData] = useState({
+    totalAlumni: 0,
+    activeUsers: 0,
+    eventsThisYear: 0,
+    jobPlacements: 0,
+    engagementRate: 0,
+    monthlyGrowth: 0
+  });
+  const [departmentData, setDepartmentData] = useState([]);
+  const [batchData, setBatchData] = useState([]);
+  const [monthlyTrend, setMonthlyTrend] = useState([]);
 
-  // Mock analytics data
-  const analyticsData = {
-    totalAlumni: 2842,
-    activeUsers: 1204,
-    eventsThisYear: 42,
-    jobPlacements: 327,
-    engagementRate: 85,
-    monthlyGrowth: 12
+  useEffect(() => {
+    fetchAnalyticsData();
+  }, [timeRange]);
+
+  const fetchAnalyticsData = async () => {
+    try {
+      // Fetch overall analytics
+      const overallResponse = await api.get(`/institution/analytics/overall?timeRange=${timeRange}`);
+      
+      if (overallResponse.data.success) {
+        setAnalyticsData(overallResponse.data.data);
+      }
+      
+      // Fetch mentorship summary for department and batch data
+      const mentorshipResponse = await api.get(`/institution/analytics/mentorship-summary?timeRange=${timeRange}`);
+      
+      if (mentorshipResponse.data.success) {
+        setDepartmentData(mentorshipResponse.data.data.departmentData || []);
+        setBatchData(mentorshipResponse.data.data.batchData || []);
+        setMonthlyTrend(mentorshipResponse.data.data.monthlyTrend || []);
+      }
+    } catch (error) {
+      console.error('Error fetching analytics data:', error);
+      // Fallback to mock data if API fails
+      setAnalyticsData({
+        totalAlumni: 1285,
+        activeUsers: 420,
+        eventsThisYear: 12,
+        jobPlacements: 87,
+        engagementRate: 72,
+        monthlyGrowth: 15
+      });
+      
+      setDepartmentData([
+        { _id: 'Computer Science', sessions: 120, mentors: 25 },
+        { _id: 'Business Administration', sessions: 95, mentors: 20 },
+        { _id: 'Engineering', sessions: 85, mentors: 18 },
+        { _id: 'Medicine', sessions: 70, mentors: 15 },
+        { _id: 'Law', sessions: 60, mentors: 12 }
+      ]);
+      
+      setBatchData([
+        { _id: 2023, sessions: 150, mentors: 30 },
+        { _id: 2022, sessions: 135, mentors: 28 },
+        { _id: 2021, sessions: 120, mentors: 25 },
+        { _id: 2020, sessions: 110, mentors: 22 },
+        { _id: 2019, sessions: 95, mentors: 20 }
+      ]);
+      
+      setMonthlyTrend([
+        { month: 'Jan', sessions: 45, mentors: 30 },
+        { month: 'Feb', sessions: 52, mentors: 32 },
+        { month: 'Mar', sessions: 48, mentors: 31 },
+        { month: 'Apr', sessions: 60, mentors: 35 },
+        { month: 'May', sessions: 55, mentors: 33 },
+        { month: 'Jun', sessions: 65, mentors: 38 }
+      ]);
+    }
   };
 
-  // Chart data for alumni registration trend
-  const alumniRegistrationData = [
-    { month: 'Jan', count: 120 },
-    { month: 'Feb', count: 180 },
-    { month: 'Mar', count: 150 },
-    { month: 'Apr', count: 220 },
-    { month: 'May', count: 190 },
-    { month: 'Jun', count: 250 },
-    { month: 'Jul', count: 210 },
-    { month: 'Aug', count: 280 },
-    { month: 'Sep', count: 240 },
-    { month: 'Oct', count: 310 },
-    { month: 'Nov', count: 270 },
-    { month: 'Dec', count: 350 }
+  // KPI Cards Data
+  const kpiData = [
+    {
+      title: 'Total Alumni',
+      value: analyticsData.totalAlumni,
+      change: `+${analyticsData.monthlyGrowth}%`,
+      icon: '👥',
+      color: 'bg-blue-100 text-blue-600'
+    },
+    {
+      title: 'Active Users',
+      value: analyticsData.activeUsers,
+      change: `${analyticsData.engagementRate}%`,
+      icon: '📈',
+      color: 'bg-green-100 text-green-600'
+    },
+    {
+      title: 'Events This Year',
+      value: analyticsData.eventsThisYear,
+      change: '+3',
+      icon: '📅',
+      color: 'bg-purple-100 text-purple-600'
+    },
+    {
+      title: 'Job Placements',
+      value: analyticsData.jobPlacements,
+      change: '+12%',
+      icon: '💼',
+      color: 'bg-amber-100 text-amber-600'
+    }
   ];
-
-  // Chart data for events
-  const eventsData = [
-    { month: 'Jan', count: 3 },
-    { month: 'Feb', count: 4 },
-    { month: 'Mar', count: 2 },
-    { month: 'Apr', count: 5 },
-    { month: 'May', count: 3 },
-    { month: 'Jun', count: 6 },
-    { month: 'Jul', count: 4 },
-    { month: 'Aug', count: 7 },
-    { month: 'Sep', count: 5 },
-    { month: 'Oct', count: 8 },
-    { month: 'Nov', count: 6 },
-    { month: 'Dec', count: 9 }
-  ];
-
-  // Department distribution data
-  const departmentData = [
-    { name: 'Computer Science', value: 420 },
-    { name: 'Business', value: 380 },
-    { name: 'Engineering', value: 350 },
-    { name: 'Arts', value: 280 },
-    { name: 'Medicine', value: 220 },
-    { name: 'Law', value: 180 },
-    { name: 'Science', value: 310 },
-    { name: 'Education', value: 160 }
-  ];
-
-  // Job placement by sector data
-  const jobPlacementData = [
-    { name: 'Technology', value: 120 },
-    { name: 'Finance', value: 85 },
-    { name: 'Healthcare', value: 65 },
-    { name: 'Education', value: 45 },
-    { name: 'Government', value: 35 },
-    { name: 'Entrepreneurship', value: 50 },
-    { name: 'Other', value: 27 }
-  ];
-
-  // Colors for charts
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FF6B6B', '#4ECDC4'];
-  const PIE_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FF6B6B'];
 
   return (
     <div className="space-y-6">
@@ -86,310 +120,197 @@ const Analytics = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-green-50 to-teal-50 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-green-100"
+        className="bg-gradient-to-r from-indigo-50 to-purple-50 backdrop-blur-lg rounded-xl shadow-lg p-6 border border-indigo-100"
       >
-        <h1 className="text-2xl font-bold text-gray-800">Analytics Dashboard</h1>
-        <p className="text-gray-700 mt-1">Detailed insights and metrics for your alumni network</p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Analytics Dashboard</h1>
+            <p className="text-gray-700 mt-1">Comprehensive insights into your alumni community</p>
+          </div>
+          <div className="mt-4 md:mt-0">
+            <div className="inline-flex rounded-md shadow-sm" role="group">
+              <Button
+                variant="outline"
+                onClick={() => setTimeRange('weekly')}
+                className={`${
+                  timeRange === 'weekly'
+                    ? 'bg-indigo-100 text-indigo-800 border-indigo-200'
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                } rounded-r-none`}
+              >
+                Weekly
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setTimeRange('monthly')}
+                className={`${
+                  timeRange === 'monthly'
+                    ? 'bg-indigo-100 text-indigo-800 border-indigo-200'
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                } rounded-none`}
+              >
+                Monthly
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setTimeRange('quarterly')}
+                className={`${
+                  timeRange === 'quarterly'
+                    ? 'bg-indigo-100 text-indigo-800 border-indigo-200'
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                } rounded-none`}
+              >
+                Quarterly
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setTimeRange('yearly')}
+                className={`${
+                  timeRange === 'yearly'
+                    ? 'bg-indigo-100 text-indigo-800 border-indigo-200'
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                } rounded-l-none`}
+              >
+                Yearly
+              </Button>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
-      {/* Time Range Filter */}
-      <div className="flex justify-end">
-        <div className="inline-flex rounded-md shadow-sm" role="group">
-          <Button
-            variant="outline"
-            onClick={() => setTimeRange('weekly')}
-            className={`${
-              timeRange === 'weekly'
-                ? 'bg-green-100 text-green-800 border-green-200'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-            } rounded-r-none`}
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {kpiData.map((kpi, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            Weekly
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setTimeRange('monthly')}
-            className={`${
-              timeRange === 'monthly'
-                ? 'bg-green-100 text-green-800 border-green-200'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-            } rounded-none`}
-          >
-            Monthly
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setTimeRange('yearly')}
-            className={`${
-              timeRange === 'yearly'
-                ? 'bg-green-100 text-green-800 border-green-200'
-                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-            } rounded-l-none`}
-          >
-            Yearly
-          </Button>
-        </div>
-      </div>
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-lg border border-blue-100">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-blue-100 text-blue-600">
-              <i className="fas fa-users text-xl"></i>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-700">Total Alumni</p>
-              <p className="text-2xl font-bold text-gray-800">{analyticsData.totalAlumni.toLocaleString()}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-green-50 to-teal-50 backdrop-blur-lg border border-green-100">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-green-100 text-green-600">
-              <i className="fas fa-user-check text-xl"></i>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-700">Active Users</p>
-              <p className="text-2xl font-bold text-gray-800">{analyticsData.activeUsers.toLocaleString()}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 backdrop-blur-lg border border-purple-100">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-purple-100 text-purple-600">
-              <i className="fas fa-calendar-alt text-xl"></i>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-700">Events This Year</p>
-              <p className="text-2xl font-bold text-gray-800">{analyticsData.eventsThisYear}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-yellow-50 to-orange-50 backdrop-blur-lg border border-yellow-100">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-yellow-100 text-yellow-600">
-              <i className="fas fa-briefcase text-xl"></i>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-700">Job Placements</p>
-              <p className="text-2xl font-bold text-gray-800">{analyticsData.jobPlacements}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 backdrop-blur-lg border border-indigo-100">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-indigo-100 text-indigo-600">
-              <i className="fas fa-chart-line text-xl"></i>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-700">Engagement Rate</p>
-              <p className="text-2xl font-bold text-gray-800">{analyticsData.engagementRate}%</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-teal-50 to-cyan-50 backdrop-blur-lg border border-teal-100">
-          <div className="flex items-center">
-            <div className="p-3 rounded-lg bg-teal-100 text-teal-600">
-              <i className="fas fa-arrow-up text-xl"></i>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-700">Monthly Growth</p>
-              <p className="text-2xl font-bold text-gray-800">+{analyticsData.monthlyGrowth}%</p>
-            </div>
-          </div>
-        </Card>
+            <Card className="bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg border border-white/50 h-full">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">{kpi.title}</p>
+                  <p className="text-2xl font-bold text-gray-800 mt-1">{kpi.value.toLocaleString()}</p>
+                </div>
+                <div className={`p-3 rounded-lg ${kpi.color}`}>
+                  <span className="text-xl">{kpi.icon}</span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {kpi.change}
+                </span>
+              </div>
+            </Card>
+          </motion.div>
+        ))}
       </div>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Alumni Registration Trend - Line Chart */}
+        {/* Department Distribution */}
         <Card className="bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg border border-white/50">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Alumni Registration Trend</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Department Distribution</h3>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={alumniRegistrationData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" stroke="#6b7280" />
-                <YAxis stroke="#6b7280" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '0.5rem',
-                    border: '1px solid rgba(255, 255, 255, 0.5)'
-                  }} 
-                />
+              <BarChart data={departmentData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="_id" />
+                <YAxis />
+                <Tooltip />
                 <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="count" 
-                  stroke="#3b82f6" 
-                  activeDot={{ r: 8 }} 
-                  strokeWidth={2}
-                  name="Registrations"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        {/* Events Organized - Bar Chart */}
-        <Card className="bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg border border-white/50">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Events Organized</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={eventsData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" stroke="#6b7280" />
-                <YAxis stroke="#6b7280" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '0.5rem',
-                    border: '1px solid rgba(255, 255, 255, 0.5)'
-                  }} 
-                />
-                <Legend />
-                <Bar 
-                  dataKey="count" 
-                  fill="#8b5cf6" 
-                  name="Events"
-                  radius={[4, 4, 0, 0]}
-                />
+                <Bar dataKey="mentors" name="Mentors" fill="#8884d8" />
+                <Bar dataKey="sessions" name="Sessions" fill="#82ca9d" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </Card>
 
-        {/* Department Distribution - Pie Chart */}
+        {/* Batch/Graduation Year Distribution */}
         <Card className="bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg border border-white/50">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Alumni by Department</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Batch Distribution</h3>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={departmentData}
+                  data={batchData}
                   cx="50%"
                   cy="50%"
-                  labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  labelLine={false}
                   outerRadius={80}
                   fill="#8884d8"
-                  dataKey="value"
-                  nameKey="name"
+                  dataKey="mentors"
+                  nameKey="_id"
+                  label={({ _id, mentors }) => `${_id}: ${mentors}`}
                 >
-                  {departmentData.map((entry, index) => (
+                  {batchData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '0.5rem',
-                    border: '1px solid rgba(255, 255, 255, 0.5)'
-                  }} 
-                />
+                <Tooltip />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </Card>
 
-        {/* Job Placements by Sector - Pie Chart */}
-        <Card className="bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg border border-white/50">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Job Placements by Sector</h3>
+        {/* Monthly Trend */}
+        <Card className="bg-gradient-to-br from-white/80 to-white/60 backdrop-blur-lg border border-white/50 lg:col-span-2">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Monthly Activity Trend</h3>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={jobPlacementData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  nameKey="name"
-                >
-                  {jobPlacementData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '0.5rem',
-                    border: '1px solid rgba(255, 255, 255, 0.5)'
-                  }} 
-                />
+              <AreaChart data={monthlyTrend}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
                 <Legend />
-              </PieChart>
+                <Area type="monotone" dataKey="sessions" name="Sessions" stroke="#8884d8" fill="#8884d8" fillOpacity={0.3} />
+                <Line type="monotone" dataKey="mentors" name="Active Mentors" stroke="#82ca9d" strokeWidth={2} dot={{ r: 4 }} />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </Card>
       </div>
 
-      {/* Detailed Reports */}
-      <Card className="bg-gradient-to-r from-indigo-50 to-blue-50 backdrop-blur-lg border border-indigo-100">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-800">Detailed Reports</h3>
-          <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
-            <i className="fas fa-download mr-2"></i>Export Report
-          </Button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50/50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Metric</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Current</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Previous</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Change</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white/50 divide-y divide-gray-200">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Total Alumni</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">2,842</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">2,510</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">+13.2%</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Active Users</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1,204</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1,032</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">+16.7%</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Events</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">42</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">36</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">+16.7%</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Engagement Rate</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">85%</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">78%</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">+7%</td>
-              </tr>
-            </tbody>
-          </table>
+      {/* Additional Insights */}
+      <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 backdrop-blur-lg border border-indigo-100">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Community Insights</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/50 rounded-lg p-4">
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <i className="fas fa-user-graduate text-blue-600"></i>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-gray-600">Avg. Alumni Age</p>
+                <p className="text-lg font-bold text-gray-800">32 years</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white/50 rounded-lg p-4">
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <i className="fas fa-map-marker-alt text-green-600"></i>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-gray-600">Countries Represented</p>
+                <p className="text-lg font-bold text-gray-800">24</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white/50 rounded-lg p-4">
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <i className="fas fa-building text-purple-600"></i>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-gray-600">Top Employers</p>
+                <p className="text-lg font-bold text-gray-800">15 companies</p>
+              </div>
+            </div>
+          </div>
         </div>
       </Card>
     </div>

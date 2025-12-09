@@ -298,6 +298,46 @@ export const getAnalytics = async (timeRange = 'monthly') => {
   }
 };
 
+// Mentorship summary API functions
+export const getMentorshipSummary = async (timeRange = 'monthly') => {
+  try {
+    const response = await get(`/analytics/mentorship-summary?timeRange=${timeRange}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+// Location heatmap API functions
+export const getLocationHeatmap = async (timeRange = 'all') => {
+  try {
+    const response = await get(`/analytics/location-heatmap?timeRange=${timeRange}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+// Alumni spotlight API functions
+export const getAlumniSpotlight = async () => {
+  try {
+    const response = await get('/analytics/alumni-spotlight');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+// Overall analytics API functions
+export const getOverallAnalytics = async () => {
+  try {
+    const response = await get('/analytics/overall');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
 // Export default object with all functions
 const api = {
   // Generic
@@ -346,7 +386,11 @@ const api = {
   getNotificationHistory,
   
   // Analytics
-  getAnalytics
+  getAnalytics,
+  getMentorshipSummary,
+  getLocationHeatmap,
+  getAlumniSpotlight,
+  getOverallAnalytics
 };
 
 export default api;

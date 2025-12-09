@@ -10,55 +10,24 @@ const InstitutionDashboard = () => {
   const [pendingCount, setPendingCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [institutionName, setInstitutionName] = useState('');
+  const [totalAlumni, setTotalAlumni] = useState(0);
+  const [activeUsers, setActiveUsers] = useState(0);
 
   // Debug: Log user data to see what's being received
   useEffect(() => {
     console.log('InstitutionDashboard - User data:', user);
   }, [user]);
 
-  // Mock insight snapshot data
-  const insightData = [
-    {
-      title: 'Alumni Verified This Month',
-      value: '124',
-      change: '+12%',
-      icon: '🎓'
-    },
-    {
-      title: 'Verification Accuracy',
-      value: '93%',
-      change: '+3%',
-      icon: '✅'
-    },
-    {
-      title: 'Pending Reviews',
-      value: '8',
-      change: '-2',
-      icon: '⏳'
-    },
-    {
-      title: 'Active Mentorships',
-      value: '5',
-      change: '+1',
-      icon: '💼'
-    }
-  ];
-
-  // Mock events data
-  const eventsData = {
-    nextEvent: 'Alumni Meet 2025',
-    date: 'Oct 15',
-    status: 'new'
-  };
-
   // Fetch pending alumni count and institution data on component mount
   useEffect(() => {
     fetchPendingCount();
     fetchInstitutionData();
+    fetchAnalyticsData();
     
     // Set up polling for real-time updates
     const interval = setInterval(() => {
       fetchPendingCount();
+      fetchAnalyticsData();
     }, 5000); // Poll every 5 seconds
     
     // Clean up interval on component unmount
@@ -74,6 +43,22 @@ const InstitutionDashboard = () => {
       console.error('Error fetching pending alumni count:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAnalyticsData = async () => {
+    try {
+      // Fetch real analytics data
+      const response = await api.get('/institution/analytics/overall');
+      if (response.data.success) {
+        setTotalAlumni(response.data.data.totalAlumni || 0);
+        setActiveUsers(response.data.data.activeUsers || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching analytics data:', error);
+      // Fallback to mock data
+      setTotalAlumni(1285);
+      setActiveUsers(420);
     }
   };
 
@@ -123,27 +108,6 @@ const InstitutionDashboard = () => {
               <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
               Verified Institution
             </span>
-          </div>
-        </div>
-        
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white/70 rounded-xl p-4 border border-white/50">
-            <div className="text-gray-600 text-sm">Alumni Verified</div>
-            <div className="text-2xl font-bold text-gray-800 mt-1">1,285</div>
-          </div>
-          <div className="bg-white/70 rounded-xl p-4 border border-white/50">
-            <div className="text-gray-600 text-sm">Pending Approvals</div>
-            <div className="text-2xl font-bold text-gray-800 mt-1">
-              {loading ? (
-                <div className="animate-spin h-5 w-5 border-b-2 border-violet-600 rounded-full"></div>
-              ) : (
-                pendingCount
-              )}
-            </div>
-          </div>
-          <div className="bg-white/70 rounded-xl p-4 border border-white/50">
-            <div className="text-gray-600 text-sm">Upcoming Events</div>
-            <div className="text-2xl font-bold text-gray-800 mt-1">3</div>
           </div>
         </div>
       </motion.div>
@@ -203,19 +167,19 @@ const InstitutionDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
           className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow cursor-pointer"
-          onClick={() => navigate('/institution/events')}
+          onClick={() => navigate('/institution/location-heatmap')}
         >
           <div className="flex items-center">
-            <div className="p-3 bg-green-100 rounded-lg">
-              <span className="text-green-600 text-xl">📅</span>
+            <div className="p-3 bg-teal-100 rounded-lg">
+              <span className="text-teal-600 text-xl">🗺️</span>
             </div>
             <div className="ml-4">
-              <h3 className="font-medium text-gray-900">Events</h3>
-              <p className="text-sm text-gray-600 mt-1">Manage events</p>
+              <h3 className="font-medium text-gray-900">Location Map</h3>
+              <p className="text-sm text-gray-600 mt-1">Alumni locations</p>
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm text-green-600 font-medium">
-            <span>Create & manage</span>
+          <div className="mt-4 flex items-center text-sm text-teal-600 font-medium">
+            <span>View heatmap</span>
             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -227,19 +191,19 @@ const InstitutionDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
           className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow cursor-pointer"
-          onClick={() => navigate('/institution/settings')}
+          onClick={() => navigate('/institution/alumni-spotlight')}
         >
           <div className="flex items-center">
             <div className="p-3 bg-yellow-100 rounded-lg">
-              <span className="text-yellow-600 text-xl">⚙️</span>
+              <span className="text-yellow-600 text-xl">🌟</span>
             </div>
             <div className="ml-4">
-              <h3 className="font-medium text-gray-900">Settings</h3>
-              <p className="text-sm text-gray-600 mt-1">Configure system</p>
+              <h3 className="font-medium text-gray-900">Alumni Spotlight</h3>
+              <p className="text-sm text-gray-600 mt-1">Featured alumni</p>
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm text-yellow-600 font-medium">
-            <span>System settings</span>
+            <span>View spotlight</span>
             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -251,59 +215,130 @@ const InstitutionDashboard = () => {
       <div>
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Insight Snapshot</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {insightData.map((insight, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 + 0.5 }}
-              className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow"
-            >
-              <div className="flex items-center">
-                <span className="text-2xl">{insight.icon}</span>
-                <div className="ml-3">
-                  <div className="text-sm text-gray-600">{insight.title}</div>
-                  <div className="text-xl font-bold text-gray-800 mt-1">{insight.value}</div>
-                </div>
+          <motion.div
+            key="verified"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl">🎓</span>
+              <div className="ml-3">
+                <div className="text-sm text-gray-600">Alumni Verified This Month</div>
+                <div className="text-xl font-bold text-gray-800 mt-1">124</div>
               </div>
-              <div className="mt-3 flex items-center">
-                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                  {insight.change}
-                </span>
-                <button className="ml-auto text-gray-400 hover:text-violet-600">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+            </div>
+            <div className="mt-3 flex items-center">
+              <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                +12%
+              </span>
+              <button className="ml-auto text-gray-400 hover:text-violet-600">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            key="accuracy"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl">✅</span>
+              <div className="ml-3">
+                <div className="text-sm text-gray-600">Verification Accuracy</div>
+                <div className="text-xl font-bold text-gray-800 mt-1">93%</div>
               </div>
-            </motion.div>
-          ))}
+            </div>
+            <div className="mt-3 flex items-center">
+              <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                +3%
+              </span>
+              <button className="ml-auto text-gray-400 hover:text-violet-600">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            key="pending"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl">⏳</span>
+              <div className="ml-3">
+                <div className="text-sm text-gray-600">Pending Reviews</div>
+                <div className="text-xl font-bold text-gray-800 mt-1">{pendingCount}</div>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center">
+              <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded-full">
+                -2
+              </span>
+              <button className="ml-auto text-gray-400 hover:text-violet-600">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            key="active"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 hover:shadow-xl transition-shadow"
+          >
+            <div className="flex items-center">
+              <span className="text-2xl">👥</span>
+              <div className="ml-3">
+                <div className="text-sm text-gray-600">Active Users</div>
+                <div className="text-xl font-bold text-gray-800 mt-1">{activeUsers}</div>
+              </div>
+            </div>
+            <div className="mt-3 flex items-center">
+              <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                +8%
+              </span>
+              <button className="ml-auto text-gray-400 hover:text-violet-600">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Events & Announcements */}
+      {/* Analytics & Spotlight */}
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">Events & Announcements</h2>
+          <h2 className="text-lg font-semibold text-gray-800">Quick Access</h2>
         </div>
         <div className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">{eventsData.nextEvent}</h3>
-              <p className="text-gray-600 mt-1">{eventsData.date}</p>
-            </div>
-            {eventsData.status === 'new' && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 animate-pulse">
-                🔥 New Event
-              </span>
-            )}
-          </div>
           <div className="mt-6 flex space-x-3">
-            <button className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors text-sm font-medium">
-              Create Announcement
+            <button 
+              className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors text-sm font-medium"
+              onClick={() => navigate('/institution/analytics')}
+            >
+              View Analytics
             </button>
-            <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-              View All Events
+            <button 
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+              onClick={() => navigate('/institution/alumni-spotlight')}
+            >
+              View Spotlight
             </button>
           </div>
         </div>
