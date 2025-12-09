@@ -27,7 +27,6 @@ import Profile from '../pages/institution/Profile';
 import Notifications from '../pages/institution/Notifications';
 import RSVPManagement from '../pages/institution/RSVPManagement';
 import InstitutionSidebar from '../components/institution/InstitutionSidebar';
-import InstitutionLayout from '../layout/InstitutionLayout';
 import InstitutionAdminLayout from '../layout/InstitutionAdminLayout';
 import MentorshipSummary from '../pages/institution/MentorshipSummary';
 import LocationHeatmap from '../pages/institution/LocationHeatmap';
