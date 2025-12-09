@@ -246,6 +246,7 @@ const InstitutionLayout = () => {
         </div>
       </div>
       
+      {/* Main layout with sidebar and content - BELOW the fixed top bar */}
       <div className="lg:flex pt-16">
         {/* Collapsible Sidebar */}
         <div className={`hidden lg:block transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-16'}`}>
@@ -257,8 +258,8 @@ const InstitutionLayout = () => {
           </div>
         </div>
         
-        {/* Main content */}
-        <div className="flex-1 p-6">
+        {/* Main content - WITH scrolling capability */}
+        <div className="flex-1 p-6 overflow-auto">
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
