@@ -5,6 +5,7 @@ import { StudentProvider } from '../pages/studentpart/StudentContext';
 import Home from '../pages/Home';
 import About from '../pages/About';
 import Events from '../pages/Events';
+import Posts from '../pages/Posts';
 import AlumniDirectory from '../pages/AlumniDirectory';
 import Gallery from '../pages/Gallery';
 import Contact from '../pages/Contact';
@@ -17,17 +18,42 @@ import PageNotFound from '../components/common/PageNotFound';
 import InstitutionLayout from '../layout/InstitutionLayout';
 
 // Institution dashboard components
+import InstitutionPostFeed from '../pages/institution/InstitutionPostFeed';
 import InstitutionDashboard from '../pages/institution/InstitutionDashboard';
 import AlumniManagement from '../pages/institution/AlumniManagement';
 import EventsManagement from '../pages/institution/EventsManagement';
 import Analytics from '../pages/institution/Analytics';
 import Profile from '../pages/institution/Profile';
+import Notifications from '../pages/institution/Notifications';
+import RSVPManagement from '../pages/institution/RSVPManagement';
+import InstitutionSidebar from '../components/institution/InstitutionSidebar';
+import InstitutionLayout from '../layout/InstitutionLayout';
+import InstitutionAdminLayout from '../layout/InstitutionAdminLayout';
+import MentorshipSummary from '../pages/institution/MentorshipSummary';
+import LocationHeatmap from '../pages/institution/LocationHeatmap';
+import AlumniSpotlight from '../pages/institution/AlumniSpotlight';
+import StudentManagement from '../pages/institution/StudentManagement';
+
+// Import new admin pages
+import AdminDashboard from '../pages/institution/AdminDashboard';
+import AdminAlumniVerification from '../pages/institution/AdminAlumniVerification';
+import AdminAlumniManagement from '../pages/institution/AdminAlumniManagement';
+import AdminMentorshipSummary from '../pages/institution/AdminMentorshipSummary';
+import AdminEventsManagement from '../pages/institution/AdminEventsManagement';
+import AdminAnalytics from '../pages/institution/AdminAnalytics';
+import AdminSettings from '../pages/institution/AdminSettings';
+
+// Import new Alumni Management page
+import AlumniManagementPage from '../pages/institution/AlumniManagementPage';
+
+// Import new Alumni Activity Analytics page
+import UnifiedActivityAnalytics from '../pages/institution/UnifiedActivityAnalytics';
 
 // Alumni dashboard components
 import AlumniProfile from '../pages/aluminilogin/Profile';
 import Connections from '../pages/aluminilogin/Connections';
 import MyEvents from '../pages/aluminilogin/MyEvents';
-import Posts from '../pages/aluminilogin/Posts';
+import PostsAlumni from '../pages/aluminilogin/Posts';
 import Mentorship from '../pages/aluminilogin/Mentorship';
 import Achievements from '../pages/aluminilogin/Achievements';
 import NotificationsAlumni from '../pages/aluminilogin/Notifications';
@@ -102,7 +128,7 @@ const PublicRoute = ({ children }) => {
       case USER_ROLES.ALUMNI:
         return <Navigate to="/alumni/dashboard" replace />;
       case USER_ROLES.INSTITUTION:
-        return <Navigate to="/institution/dashboard" replace />;
+        return <Navigate to="/institution/post-feed" replace />;
       default:
         return <Navigate to="/" replace />;
     }
@@ -183,6 +209,7 @@ const AppRouter = () => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/posts" element={<Posts />} />
           <Route path="/alumni" element={<AlumniDirectory />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Contact />} />
@@ -219,13 +246,7 @@ const AppRouter = () => {
                       <h3 className="font-semibold text-orange-800 mb-2">Option 4:</h3>
                       <p><strong>Email:</strong> jane.alumni@gmail.com</p>
                       <p><strong>Password:</strong> Alumni123!</p>
-                    </div>
-                    
-                    <div className="bg-yellow-50 p-4 rounded border border-yellow-200">
-                      <h3 className="font-semibold text-yellow-800 mb-2">Pending Alumni (Test Status Page):</h3>
-                      <p><strong>Email:</strong> john.pending@gmail.com</p>
-                      <p><strong>Password:</strong> test123</p>
-                      <p className="text-xs text-yellow-600 mt-1">Will show pending approval page</p>
+                      <p className="text-xs text-orange-600 mt-1">Will show pending approval page</p>
                     </div>
                   </div>
                   <a href="/login" className="inline-block mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
@@ -281,6 +302,28 @@ const AppRouter = () => {
               <Route path="component-test" element={<ComponentTest />} />
               <Route path="test" element={<TestPage />} />
             </>
+            <Route index element={<NewAlumniDashboard />} />
+            <Route path="dashboard" element={<NewAlumniDashboard />} />
+            <Route path="profile" element={<AlumniProfile />} />
+            <Route path="connections" element={<Connections />} />
+            <Route path="events" element={<MyEvents />} />
+            <Route path="posts" element={<PostsAlumni />} />
+            <Route path="mentorship" element={<Mentorship />} />
+            <Route path="mentorship/requests" element={<MentorshipRequests />} />
+            <Route path="mentorship/calendar" element={<MentorshipCalendar />} />
+            <Route path="mentorship/completed" element={<CompletedRequests />} />
+            <Route path="achievements" element={<Achievements />} />
+            <Route path="notifications" element={<NotificationsAlumni />} />
+            <Route path="directory" element={<AlumniStudentDirectory />} />
+            <Route path="jobs" element={<JobsReferrals />} />
+            <Route path="fundraising" element={<Fundraising />} />
+            <Route path="badges" element={<BadgesRecognition />} />
+            <Route path="follow-requests" element={<FollowRequestsPage />} />
+            <Route path="test-follow-requests" element={<TestFollowRequests />} />
+            <Route path="simple-test" element={<SimpleTest />} />
+            <Route path="component-test" element={<ComponentTest />} />
+            <Route path="test" element={<TestPage />} />
+
           </Route>
           
           {/* Alternative alumni dashboard route for backward compatibility */}
@@ -296,18 +339,40 @@ const AppRouter = () => {
                 <InstitutionLayout />
               </ProtectedRoute>
             }>
-            <Route index element={<InstitutionDashboard />} />
+            <Route index element={<Navigate to="/institution/post-feed" replace />} />
+            <Route path="post-feed" element={<InstitutionPostFeed />} />
             <Route path="dashboard" element={<InstitutionDashboard />} />
             <Route path="alumni-verification" element={<AlumniManagement />} />
+            <Route path="alumni-management" element={<AlumniManagementPage />} />
+            <Route path="student-management" element={<StudentManagement />} />
             <Route path="analytics" element={<Analytics />} />
-            <Route path="events" element={<EventsManagement />} />
-            <Route path="settings" element={<Profile />} />
+            <Route path="activity-analytics" element={<UnifiedActivityAnalytics />} />
+            <Route path="location-heatmap" element={<LocationHeatmap />} />
+            <Route path="alumni-spotlight" element={<AlumniSpotlight />} />
+          </Route>
+
+          {/* New Institution Admin Routes */}
+          <Route 
+            path="/institution/admin/*" 
+            element={
+              <ProtectedRoute allowedRoles={[USER_ROLES.INSTITUTION]}>
+                <InstitutionAdminLayout />
+              </ProtectedRoute>
+            }>
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="verification" element={<AdminAlumniVerification />} />
+            <Route path="alumni" element={<AdminAlumniManagement />} />
+            <Route path="mentorship" element={<AdminMentorshipSummary />} />
+            <Route path="events" element={<AdminEventsManagement />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
 
           // Update the old institution-dashboard route to redirect to the new one
           <Route 
             path="/institution-dashboard" 
-            element={<Navigate to="/institution/dashboard" replace />} 
+            element={<Navigate to="/institution/post-feed" replace />} 
           />
           
           {/* Student Dashboard Routes - Wrapped with single StudentProvider */}

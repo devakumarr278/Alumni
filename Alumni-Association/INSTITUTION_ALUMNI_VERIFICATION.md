@@ -112,3 +112,36 @@ The system now links each alumni with their institution and ensures that:
 3. Implement email notifications for institutions
 4. Add institution dashboard UI components
 5. Create institution registration process
+
+# Institution Alumni Verification Page
+
+## Overview
+This document describes the new clean, modern Alumni Verification page implemented for the Institution Admin System.
+
+## Features
+- **Card-based UI**: Clean alumni request cards showing essential information
+- **Slide-in Details Panel**: Modern UX where clicking a card opens a slide-in panel with full details
+- **Trust-based Verification**: No scores displayed, focusing on real alumni data
+- **Responsive Design**: Works beautifully on all device sizes
+
+## User Experience Flow
+1. **Default View**: Grid of alumni cards with pending status
+2. **Card Interaction**: Click anywhere on a card to open detailed view (except action buttons)
+3. **Detail View**: Slide-in panel showing comprehensive alumni information
+4. **Action**: Approve or reject alumni directly from either the card or detail panel
+
+## Design Principles
+- Soft shadows and rounded corners for a modern look
+- Muted labels with bold values for improved readability
+- Blue accent color for authority and trust
+- Smooth slide-in animations for enhanced user experience
+- Minimalist approach with no unnecessary metrics
+
+## Technical Implementation
+- Component: `src/pages/institution/AdminAlumniVerification.js`
+- Uses CSS modules for styling
+- Fully responsive with mobile-friendly layout
+- Interactive elements with proper event handling
+
+## Access
+Available at `/institution/admin/verification` within the Institution Admin System.
