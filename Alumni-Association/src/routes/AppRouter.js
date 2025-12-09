@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth, USER_ROLES } from '../context/AuthContext';
 import { StudentProvider } from '../pages/studentpart/StudentContext';
 import Home from '../pages/Home';
@@ -15,14 +15,13 @@ import PendingApproval from '../pages/PendingApproval';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import PageNotFound from '../components/common/PageNotFound';
+import InstitutionLayout from '../layout/InstitutionLayout';
 
 // Institution dashboard components
 import InstitutionPostFeed from '../pages/institution/InstitutionPostFeed';
 import InstitutionDashboard from '../pages/institution/InstitutionDashboard';
-import AlumniVerification from '../pages/institution/AlumniVerification';
 import AlumniManagement from '../pages/institution/AlumniManagement';
 import EventsManagement from '../pages/institution/EventsManagement';
-import GalleryManagement from '../pages/institution/GalleryManagement';
 import Analytics from '../pages/institution/Analytics';
 import Profile from '../pages/institution/Profile';
 import Notifications from '../pages/institution/Notifications';
@@ -51,7 +50,6 @@ import AlumniManagementPage from '../pages/institution/AlumniManagementPage';
 import UnifiedActivityAnalytics from '../pages/institution/UnifiedActivityAnalytics';
 
 // Alumni dashboard components
-import AlumniDashboard from '../pages/aluminilogin/Dashboard';
 import AlumniProfile from '../pages/aluminilogin/Profile';
 import Connections from '../pages/aluminilogin/Connections';
 import MyEvents from '../pages/aluminilogin/MyEvents';
@@ -59,7 +57,6 @@ import PostsAlumni from '../pages/aluminilogin/Posts';
 import Mentorship from '../pages/aluminilogin/Mentorship';
 import Achievements from '../pages/aluminilogin/Achievements';
 import NotificationsAlumni from '../pages/aluminilogin/Notifications';
-import AlumniNavigation from '../components/alumni/AlumniNavigation';
 import AlumniLayoutNew from '../layout/AlumniLayoutNew';
 import NewAlumniDashboard from '../pages/aluminilogin/NewDashboard';
 import AlumniStudentDirectory from '../pages/aluminilogin/AlumniStudentDirectory';
@@ -78,6 +75,7 @@ import TestPage from '../pages/aluminilogin/TestPage';
 
 // Student dashboard components
 import StudentDashboard from '../pages/studentpart/index.jsx'; // Fixed import to explicitly reference index.jsx
+import CareerRoadmap from '../pages/studentpart/CareerRoadmap.jsx';
 
 // Student dashboard components
 import StudentProfile from '../pages/studentpart/StudentProfile'; // Updated to use the new component
@@ -90,6 +88,17 @@ import StudentBadges from '../pages/studentpart/badges';
 import StudentNotifications from '../pages/studentpart/notifications';
 import StudentPledges from '../pages/studentpart/pledges';
 import TestProfile from '../pages/studentpart/TestProfile';
+
+// New AI-powered student features
+import SkillAnalyzer from '../pages/studentpart/SkillAnalyzer';
+import ResumeImprover from '../pages/studentpart/ResumeImprover';
+import DailyTasks from '../pages/studentpart/DailyTasks';
+import ProjectSuggestions from '../pages/studentpart/ProjectSuggestions';
+import InterviewPrep from '../pages/studentpart/InterviewPrep';
+import SkillGapAnalyzer from '../pages/studentpart/SkillGapAnalyzer';
+import IndustryInsights from '../pages/studentpart/IndustryInsights';
+import StudentPortfolio from '../pages/studentpart/Portfolio';
+import MentorshipTracker from '../pages/studentpart/MentorshipTracker';
 import StudentLayout from '../layout/StudentLayout';
 
 // Public Route Component (redirects to dashboard if already logged in)
@@ -234,7 +243,7 @@ const AppRouter = () => {
                     </div>
                     
                     <div className="bg-orange-50 p-4 rounded border border-orange-200">
-                      <h3 className="font-semibold text-orange-800 mb-2">Existing User:</h3>
+                      <h3 className="font-semibold text-orange-800 mb-2">Option 4:</h3>
                       <p><strong>Email:</strong> jane.alumni@gmail.com</p>
                       <p><strong>Password:</strong> Alumni123!</p>
                       <p className="text-xs text-orange-600 mt-1">Will show pending approval page</p>
@@ -270,6 +279,29 @@ const AppRouter = () => {
               </ProtectedRoute>
             }>
             {/* These routes will render inside AlumniLayoutNew via Outlet */}
+            <>
+              <Route index element={<NewAlumniDashboard />} />
+              <Route path="dashboard" element={<NewAlumniDashboard />} />
+              <Route path="profile" element={<AlumniProfile />} />
+              <Route path="connections" element={<Connections />} />
+              <Route path="events" element={<MyEvents />} />
+              <Route path="posts" element={<Posts />} />
+              <Route path="mentorship" element={<Mentorship />} />
+              <Route path="mentorship/requests" element={<MentorshipRequests />} />
+              <Route path="mentorship/calendar" element={<MentorshipCalendar />} />
+              <Route path="mentorship/completed" element={<CompletedRequests />} />
+              <Route path="achievements" element={<Achievements />} />
+              <Route path="notifications" element={<NotificationsAlumni />} />
+              <Route path="directory" element={<AlumniStudentDirectory />} />
+              <Route path="jobs" element={<JobsReferrals />} />
+              <Route path="fundraising" element={<Fundraising />} />
+              <Route path="badges" element={<BadgesRecognition />} />
+              <Route path="follow-requests" element={<FollowRequestsPage />} />
+              <Route path="test-follow-requests" element={<TestFollowRequests />} />
+              <Route path="simple-test" element={<SimpleTest />} />
+              <Route path="component-test" element={<ComponentTest />} />
+              <Route path="test" element={<TestPage />} />
+            </>
             <Route index element={<NewAlumniDashboard />} />
             <Route path="dashboard" element={<NewAlumniDashboard />} />
             <Route path="profile" element={<AlumniProfile />} />
@@ -362,6 +394,19 @@ const AppRouter = () => {
                       <Route path="badges" element={<StudentBadges />} />
                       <Route path="notifications" element={<StudentNotifications />} />
                       <Route path="pledges" element={<StudentPledges />} />
+                      <Route path="roadmap" element={<CareerRoadmap />} />
+
+                      {/* New AI-powered features */}
+                      <Route path="skill-analyzer" element={<SkillAnalyzer />} />
+                      <Route path="resume-improver" element={<ResumeImprover />} />
+                      <Route path="daily-tasks" element={<DailyTasks />} />
+                      <Route path="project-suggestions" element={<ProjectSuggestions />} />
+                      <Route path="interview-prep" element={<InterviewPrep />} />
+                      <Route path="skill-gap" element={<SkillGapAnalyzer />} />
+                      <Route path="industry-insights" element={<IndustryInsights />} />
+                      <Route path="portfolio" element={<StudentPortfolio />} />
+                      <Route path="mentorship-tracker" element={<MentorshipTracker />} />
+
                       <Route path="test-profile" element={<TestProfile />} />
                     </Routes>
                   </StudentLayout>
