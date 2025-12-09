@@ -12,7 +12,7 @@ const FixedDashboard = () => {
  
   // Refs for dropdown containers
   const userDropdownRef = useRef(null);
-  const notificationDropdownRef = useRef(null);
+  const notificationDropdownRef = useef(null);
  
   // Mock notifications data
   const notifications = [

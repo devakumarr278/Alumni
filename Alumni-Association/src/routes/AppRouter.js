@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth, USER_ROLES } from '../context/AuthContext';
 import { StudentProvider } from '../pages/studentpart/StudentContext';
 import Home from '../pages/Home';
@@ -14,22 +14,16 @@ import PendingApproval from '../pages/PendingApproval';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
 import PageNotFound from '../components/common/PageNotFound';
+import InstitutionLayout from '../layout/InstitutionLayout';
 
 // Institution dashboard components
 import InstitutionDashboard from '../pages/institution/InstitutionDashboard';
-import AlumniVerification from '../pages/institution/AlumniVerification';
 import AlumniManagement from '../pages/institution/AlumniManagement';
 import EventsManagement from '../pages/institution/EventsManagement';
-import GalleryManagement from '../pages/institution/GalleryManagement';
 import Analytics from '../pages/institution/Analytics';
 import Profile from '../pages/institution/Profile';
-import Notifications from '../pages/institution/Notifications';
-import RSVPManagement from '../pages/institution/RSVPManagement';
-import InstitutionNavigation from '../components/institution/InstitutionNavigation';
-import InstitutionLayout from '../layout/InstitutionLayout';
 
 // Alumni dashboard components
-import AlumniDashboard from '../pages/aluminilogin/Dashboard';
 import AlumniProfile from '../pages/aluminilogin/Profile';
 import Connections from '../pages/aluminilogin/Connections';
 import MyEvents from '../pages/aluminilogin/MyEvents';
@@ -37,7 +31,6 @@ import Posts from '../pages/aluminilogin/Posts';
 import Mentorship from '../pages/aluminilogin/Mentorship';
 import Achievements from '../pages/aluminilogin/Achievements';
 import NotificationsAlumni from '../pages/aluminilogin/Notifications';
-import AlumniNavigation from '../components/alumni/AlumniNavigation';
 import AlumniLayoutNew from '../layout/AlumniLayoutNew';
 import NewAlumniDashboard from '../pages/aluminilogin/NewDashboard';
 import AlumniStudentDirectory from '../pages/aluminilogin/AlumniStudentDirectory';
@@ -58,7 +51,6 @@ import TestPage from '../pages/aluminilogin/TestPage';
 import StudentDashboard from '../pages/studentpart/index.jsx'; // Fixed import to explicitly reference index.jsx
 import CareerRoadmap from '../pages/studentpart/CareerRoadmap.jsx';
 
-
 // Student dashboard components
 import StudentProfile from '../pages/studentpart/StudentProfile'; // Updated to use the new component
 import StudentDirectory from '../pages/studentpart/directory';
@@ -70,6 +62,17 @@ import StudentBadges from '../pages/studentpart/badges';
 import StudentNotifications from '../pages/studentpart/notifications';
 import StudentPledges from '../pages/studentpart/pledges';
 import TestProfile from '../pages/studentpart/TestProfile';
+
+// New AI-powered student features
+import SkillAnalyzer from '../pages/studentpart/SkillAnalyzer';
+import ResumeImprover from '../pages/studentpart/ResumeImprover';
+import DailyTasks from '../pages/studentpart/DailyTasks';
+import ProjectSuggestions from '../pages/studentpart/ProjectSuggestions';
+import InterviewPrep from '../pages/studentpart/InterviewPrep';
+import SkillGapAnalyzer from '../pages/studentpart/SkillGapAnalyzer';
+import IndustryInsights from '../pages/studentpart/IndustryInsights';
+import StudentPortfolio from '../pages/studentpart/Portfolio';
+import MentorshipTracker from '../pages/studentpart/MentorshipTracker';
 import StudentLayout from '../layout/StudentLayout';
 
 // Public Route Component (redirects to dashboard if already logged in)
@@ -327,6 +330,17 @@ const AppRouter = () => {
                       <Route path="notifications" element={<StudentNotifications />} />
                       <Route path="pledges" element={<StudentPledges />} />
                       <Route path="roadmap" element={<CareerRoadmap />} />
+
+                      {/* New AI-powered features */}
+                      <Route path="skill-analyzer" element={<SkillAnalyzer />} />
+                      <Route path="resume-improver" element={<ResumeImprover />} />
+                      <Route path="daily-tasks" element={<DailyTasks />} />
+                      <Route path="project-suggestions" element={<ProjectSuggestions />} />
+                      <Route path="interview-prep" element={<InterviewPrep />} />
+                      <Route path="skill-gap" element={<SkillGapAnalyzer />} />
+                      <Route path="industry-insights" element={<IndustryInsights />} />
+                      <Route path="portfolio" element={<StudentPortfolio />} />
+                      <Route path="mentorship-tracker" element={<MentorshipTracker />} />
 
                       <Route path="test-profile" element={<TestProfile />} />
                     </Routes>

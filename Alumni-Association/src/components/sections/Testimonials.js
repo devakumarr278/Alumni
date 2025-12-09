@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const StarIcon = ({ filled }) => (
@@ -14,6 +14,51 @@ const StarIcon = ({ filled }) => (
     />
   </svg>
 );
+
+const TestimonialCard = ({ testimonial, index, isActive }) => {
+  return (
+    <motion.div
+      key={testimonial.id || index}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      whileHover={{ y: -10 }}
+      className={`rounded-2xl shadow-xl h-full flex flex-col transition-all duration-300 ${
+        isActive 
+          ? 'bg-gradient-to-br from-white to-gray-50 border-2 border-blue-200 scale-105' 
+          : 'bg-white'
+      }`}
+    >
+      <div className="p-8 flex-grow">
+        <div className="flex items-center mb-6">
+          <div className="relative">
+            <img 
+              src={testimonial.avatar} 
+              alt={testimonial.name}
+              className="w-16 h-16 rounded-full object-cover mr-4 border-2 border-white shadow-md"
+            />
+            <div className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-1">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h4 className="font-bold text-gray-800 text-lg">{testimonial.name}</h4>
+            <p className="text-sm text-gray-600">{testimonial.batch} • {testimonial.profession}</p>
+          </div>
+        </div>
+        <p className="text-gray-700 italic mb-6 flex-grow">"{testimonial.quote}"</p>
+        <div className="flex">
+          {[...Array(5)].map((_, i) => (
+            <StarIcon key={i} filled={i < testimonial.rating} />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const Testimonials = ({ testimonials = [] }) => {
   const defaultTestimonials = [
@@ -47,52 +92,60 @@ const Testimonials = ({ testimonials = [] }) => {
   ];
 
   const displayTestimonials = testimonials.length > 0 ? testimonials : defaultTestimonials;
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Auto-rotate testimonials
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % displayTestimonials.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [displayTestimonials.length]);
 
   return (
-    <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-5">
+        <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-blue-500 blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-purple-500 blur-3xl"></div>
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div 
-          className="text-center mb-12"
+          className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Alumni Stories</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">Alumni Stories</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Hear from our alumni about their experiences
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayTestimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.id || index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <div className="bg-white p-8 rounded-xl shadow-md h-full flex flex-col">
-                <div className="flex items-center mb-6">
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover mr-4"
-                  />
-                  <div>
-                    <h4 className="font-bold text-gray-800">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-600">{testimonial.batch} • {testimonial.profession}</p>
-                  </div>
-                </div>
-                <p className="text-gray-700 italic mb-6 flex-grow">"{testimonial.quote}"</p>
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <StarIcon key={i} filled={i < testimonial.rating} />
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+            <TestimonialCard 
+              key={testimonial.id || index} 
+              testimonial={testimonial} 
+              index={index}
+              isActive={index === activeIndex}
+            />
+          ))}
+        </div>
+
+        {/* Testimonial indicators */}
+        <div className="flex justify-center mt-8 space-x-2">
+          {displayTestimonials.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === activeIndex ? 'bg-blue-600 w-8' : 'bg-gray-300'
+              }`}
+            />
           ))}
         </div>
       </div>
