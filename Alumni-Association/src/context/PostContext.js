@@ -52,6 +52,7 @@ export const PostProvider = ({ children }) => {
       const formData = new FormData();
       
       // Append post data
+      // Append post data as JSON string
       formData.append('author', postData.author);
       formData.append('caption', postData.caption);
       formData.append('visibility', postData.visibility || 'public');
@@ -70,6 +71,8 @@ export const PostProvider = ({ children }) => {
         },
         body: formData
       });      
+      });
+      
       const result = await response.json();
       
       if (result.success) {

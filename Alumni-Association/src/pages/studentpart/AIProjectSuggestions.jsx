@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lightbulb,
@@ -67,11 +66,13 @@ import {
 } from "lucide-react";
 
 /**
- * Enhanced ProjectSuggestions with:
+ * AI-Enhanced ProjectSuggestions with:
  * - 10 projects per domain (Web, Mobile, Data, Tooling, Security)
  * - Unique light/dark purple theme
  * - Detailed step instructions with "How to do it" sections
  * - Light/Dark mode toggle
+ * - AI-powered personalized recommendations
+ * - AI-generated project suggestions
  */
 
 const DOMAIN_ICONS = {
@@ -94,7 +95,6 @@ const ICONS = {
   Wifi, Users, Eye, Music, Camera, Video, MessageSquare, ShoppingCart, CreditCard,
   FileText, PieChart, LineChart, FileCode, Workflow, Bug, Network, Key, Scan,
   ShieldAlert, Clipboard, TestTube, Code2, Bot, Sparkles, Calendar, Bell, Map,
-  Upload, Download, Fingerprint
   Upload, Download, Hash, Fingerprint
 };
 
@@ -107,41 +107,7 @@ const domains = [
   "Cybersecurity"
 ];
 
-const generateProjects = () => {
-  const allProjects = [];
-  
-  domains.forEach((domain, domainIndex) => {
-    const domainProjects = [];
-    
-    for (let i = 1; i <= 10; i++) {
-      const projectId = `${domainIndex + 1}${i}`;
-      const iconKeys = Object.keys(DOMAIN_ICONS);
-      const iconKey = iconKeys[domainIndex % iconKeys.length];
-      
-      const project = {
-        id: projectId,
-        title: `Project ${i}: ${domain} ${getProjectTitle(domain, i)}`,
-        description: getProjectDescription(domain, i),
-        category: domain,
-        difficulty: getDifficulty(i),
-        estimatedTime: `${Math.floor(Math.random() * 4) + 1}-${Math.floor(Math.random() * 6) + 2} weeks`,
-        skills: getSkills(domain),
-        icon: iconKey,
-        iconColor: getIconColor(domainIndex, i),
-        xp: Math.floor(Math.random() * 300) + 200,
-        steps: generateSteps(domain, i),
-      };
-      
-      domainProjects.push(project);
-    }
-    
-    allProjects.push(...domainProjects);
-  });
-  
-  return allProjects;
-};
-
-// Helper functions
+// Helper functions for generating mock projects
 const getProjectTitle = (domain, index) => {
   const titles = {
     "Web Development": [
@@ -476,6 +442,41 @@ const getDomainSpecificSteps = (domain, projectIndex) => {
   return domainSteps[domain] || [];
 };
 
+// Generate mock projects
+const generateProjects = () => {
+  const allProjects = [];
+  
+  domains.forEach((domain, domainIndex) => {
+    const domainProjects = [];
+    
+    for (let i = 1; i <= 10; i++) {
+      const projectId = `${domainIndex + 1}${i}`;
+      const iconKeys = Object.keys(DOMAIN_ICONS);
+      const iconKey = iconKeys[domainIndex % iconKeys.length];
+      
+      const project = {
+        id: projectId,
+        title: `Project ${i}: ${domain} ${getProjectTitle(domain, i)}`,
+        description: getProjectDescription(domain, i),
+        category: domain,
+        difficulty: getDifficulty(i),
+        estimatedTime: `${Math.floor(Math.random() * 4) + 1}-${Math.floor(Math.random() * 6) + 2} weeks`,
+        skills: getSkills(domain),
+        icon: iconKey,
+        iconColor: getIconColor(domainIndex, i),
+        xp: Math.floor(Math.random() * 300) + 200,
+        steps: generateSteps(domain, i),
+      };
+      
+      domainProjects.push(project);
+    }
+    
+    allProjects.push(...domainProjects);
+  });
+  
+  return allProjects;
+};
+
 const mockProjects = generateProjects();
 
 const categories = ["All", ...domains];
@@ -508,7 +509,109 @@ const darkTheme = {
   hover: "hover:shadow-purple-800",
 };
 
-const ProjectSuggestions = () => {
+// AI Service for Gemini API integration
+class AIService {
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+    // Using the same configuration as your working curl command
+    this.apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  }
+
+  async generateProjectSuggestions(userSkills, interests) {
+    try {
+      const prompt = `Generate 3 personalized project suggestions for a developer with skills in ${userSkills.join(', ')} and interests in ${interests.join(', ')}. 
+      Each project should include:
+      1. A catchy title
+      2. A brief description (under 100 words)
+      3. Estimated difficulty level (Beginner, Intermediate, Advanced)
+      4. Estimated time to complete
+      5. Key skills that will be used
+      6. Potential learning outcomes
+      
+      Format the response as a JSON array with these fields for each project: title, description, difficulty, time, skills, outcomes`;
+
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      const textResponse = data.candidates[0].content.parts[0].text;
+      
+      // Extract JSON from the response
+      const jsonMatch = textResponse.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('Error generating AI project suggestions:', error);
+      return [];
+    }
+  }
+
+  async getProjectRecommendations(savedProjects, completedSteps) {
+    try {
+      const prompt = `Based on the user's saved projects: ${savedProjects.join(', ')} and completed steps: ${completedSteps}, 
+      recommend 3 new projects that would be a good next step for their learning journey. 
+      Each recommendation should include:
+      1. A title
+      2. A brief description
+      3. Why it's a good fit based on their progress
+      4. New skills they'll learn
+      
+      Format the response as a JSON array with these fields for each recommendation: title, description, reason, skills`;
+
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      const textResponse = data.candidates[0].content.parts[0].text;
+      
+      // Extract JSON from the response
+      const jsonMatch = textResponse.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('Error getting AI project recommendations:', error);
+      return [];
+    }
+  }
+}
+
+const AIProjectSuggestions = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [savedProjects, setSavedProjects] = useState(new Set());
@@ -517,8 +620,14 @@ const ProjectSuggestions = () => {
   const [stepState, setStepState] = useState({});
   const [darkMode, setDarkMode] = useState(false);
   const [activeDomain, setActiveDomain] = useState("All");
+  const [aiSuggestions, setAiSuggestions] = useState([]);
+  const [aiRecommendations, setAiRecommendations] = useState([]);
+  const [loadingAI, setLoadingAI] = useState(false);
+  const [userSkills, setUserSkills] = useState(["React", "JavaScript"]);
+  const [userInterests, setUserInterests] = useState(["Web Development", "AI/ML"]);
 
-  useEffect(() => {
+  // Initialize AI service with the provided API key
+  const aiService = new AIService("AIzaSyCV3DcNTPm5i3pg1QppuhrH395v50yCLjg");  useEffect(() => {
     setProjects(mockProjects);
     const s = localStorage.getItem(storageKeys.saved);
     if (s) setSavedProjects(new Set(JSON.parse(s)));
@@ -589,6 +698,39 @@ const ProjectSuggestions = () => {
     });
   };
 
+  // Generate AI project suggestions
+  const generateAISuggestions = async () => {
+    setLoadingAI(true);
+    try {
+      const suggestions = await aiService.generateProjectSuggestions(userSkills, userInterests);
+      setAiSuggestions(suggestions);
+    } catch (error) {
+      console.error("Error generating AI suggestions:", error);
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
+  // Get AI project recommendations
+  const getAIRecommendations = async () => {
+    setLoadingAI(true);
+    try {
+      const savedProjectIds = Array.from(savedProjects);
+      const completedStepsCount = Object.values(stepState).reduce((total, project) => 
+        total + (project.completedSteps?.length || 0), 0);
+      
+      const recommendations = await aiService.getProjectRecommendations(
+        savedProjectIds, 
+        completedStepsCount
+      );
+      setAiRecommendations(recommendations);
+    } catch (error) {
+      console.error("Error getting AI recommendations:", error);
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
   const filteredProjects = useMemo(() => {
     let result = projects;
 
@@ -634,10 +776,10 @@ const ProjectSuggestions = () => {
               </div>
               <div>
                 <h1 className={`text-2xl md:text-4xl font-extrabold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                  Project Roadmap Hub
+                  AI-Powered Project Roadmap Hub
                 </h1>
                 <p className={`mt-2 ${darkMode ? 'text-purple-200' : 'text-slate-700'}`}>
-                  {projects.length} detailed projects with step-by-step guidance
+                  {projects.length} detailed projects with step-by-step guidance + AI recommendations
                 </p>
               </div>
             </div>
@@ -683,6 +825,215 @@ const ProjectSuggestions = () => {
             ))}
           </div>
         </motion.div>
+
+        {/* AI Features Section */}
+        <div className={`mb-8 p-6 rounded-2xl border ${theme.border} backdrop-blur-sm ${
+          darkMode ? 'bg-purple-800/30' : 'bg-white/70'
+        }`}>
+          <h2 className={`text-xl font-bold mb-4 flex items-center gap-2 ${
+            darkMode ? 'text-white' : 'text-slate-900'
+          }`}>
+            <Bot className={darkMode ? "text-purple-300" : "text-purple-600"} size={24} />
+            AI-Powered Features
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Personalized Suggestions */}
+            <div className={`p-4 rounded-xl border ${theme.border} ${
+              darkMode ? 'bg-purple-800/20' : 'bg-purple-50/50'
+            }`}>
+              <h3 className={`font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                Personalized Project Suggestions
+              </h3>
+              <p className={`text-sm mb-4 ${darkMode ? 'text-purple-300' : 'text-slate-700'}`}>
+                Get AI-generated project ideas based on your skills and interests.
+              </p>
+              
+              <div className="flex flex-wrap gap-2 mb-4">
+                <input
+                  type="text"
+                  value={userSkills.join(', ')}
+                  onChange={(e) => setUserSkills(e.target.value.split(',').map(s => s.trim()))}
+                  placeholder="Your skills (comma separated)"
+                  className={`flex-1 p-2 text-sm rounded-lg border ${
+                    darkMode 
+                      ? 'bg-purple-900/50 border-purple-600 text-white' 
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
+                />
+                <input
+                  type="text"
+                  value={userInterests.join(', ')}
+                  onChange={(e) => setUserInterests(e.target.value.split(',').map(i => i.trim()))}
+                  placeholder="Your interests (comma separated)"
+                  className={`flex-1 p-2 text-sm rounded-lg border ${
+                    darkMode 
+                      ? 'bg-purple-900/50 border-purple-600 text-white' 
+                      : 'bg-white border-slate-200 text-slate-900'
+                  }`}
+                />
+              </div>
+              
+              <button
+                onClick={generateAISuggestions}
+                disabled={loadingAI}
+                className={`w-full py-2 rounded-lg font-medium transition duration-200 flex items-center justify-center gap-2 ${
+                  loadingAI
+                    ? (darkMode 
+                        ? 'bg-purple-800 text-purple-400 cursor-not-allowed' 
+                        : 'bg-purple-100 text-purple-400 cursor-not-allowed')
+                    : (darkMode 
+                        ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white hover:from-purple-700 hover:to-fuchsia-700' 
+                        : 'bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white hover:from-purple-600 hover:to-fuchsia-600')
+                }`}
+              >
+                {loadingAI ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-purple-300 border-t-transparent rounded-full animate-spin"></div>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={16} />
+                    Generate Suggestions
+                  </>
+                )}
+              </button>
+            </div>
+            
+            {/* Smart Recommendations */}
+            <div className={`p-4 rounded-xl border ${theme.border} ${
+              darkMode ? 'bg-purple-800/20' : 'bg-purple-50/50'
+            }`}>
+              <h3 className={`font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                Smart Project Recommendations
+              </h3>
+              <p className={`text-sm mb-4 ${darkMode ? 'text-purple-300' : 'text-slate-700'}`}>
+                Get AI-recommended projects based on your progress and saved items.
+              </p>
+              
+              <div className="mb-4">
+                <div className={`text-sm p-3 rounded-lg ${
+                  darkMode ? 'bg-purple-900/30 text-purple-300' : 'bg-purple-100 text-purple-700'
+                }`}>
+                  Based on {savedProjects.size} saved projects and {Object.values(stepState).reduce((total, project) => total + (project.completedSteps?.length || 0), 0)} completed steps
+                </div>
+              </div>
+              
+              <button
+                onClick={getAIRecommendations}
+                disabled={loadingAI || savedProjects.size === 0}
+                className={`w-full py-2 rounded-lg font-medium transition duration-200 flex items-center justify-center gap-2 ${
+                  loadingAI || savedProjects.size === 0
+                    ? (darkMode 
+                        ? 'bg-purple-800 text-purple-400 cursor-not-allowed' 
+                        : 'bg-purple-100 text-purple-400 cursor-not-allowed')
+                    : (darkMode 
+                        ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white hover:from-purple-700 hover:to-fuchsia-700' 
+                        : 'bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white hover:from-purple-600 hover:to-fuchsia-600')
+                }`}
+              >
+                {loadingAI ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-purple-300 border-t-transparent rounded-full animate-spin"></div>
+                    Analyzing...
+                  </>
+                ) : (
+                  <>
+                    <Brain size={16} />
+                    Get Recommendations
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+          
+          {/* AI Results */}
+          {(aiSuggestions.length > 0 || aiRecommendations.length > 0) && (
+            <div className="mt-6">
+              <h3 className={`font-bold mb-4 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                AI Results
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {aiSuggestions.length > 0 && (
+                  <div>
+                    <h4 className={`font-semibold mb-3 flex items-center gap-2 ${
+                      darkMode ? 'text-purple-300' : 'text-purple-700'
+                    }`}>
+                      <Sparkles size={16} />
+                      Personalized Suggestions
+                    </h4>
+                    <div className="space-y-4">
+                      {aiSuggestions.map((suggestion, index) => (
+                        <div 
+                          key={index} 
+                          className={`p-4 rounded-xl border ${theme.border} ${
+                            darkMode ? 'bg-purple-900/30' : 'bg-white'
+                          }`}
+                        >
+                          <h5 className={`font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            {suggestion.title}
+                          </h5>
+                          <p className={`text-sm mt-2 ${darkMode ? 'text-purple-200' : 'text-slate-700'}`}>
+                            {suggestion.description}
+                          </p>
+                          <div className="flex flex-wrap gap-2 mt-3">
+                            <span className={`px-2 py-1 text-xs rounded ${
+                              darkMode 
+                                ? 'bg-purple-800 text-purple-300' 
+                                : 'bg-purple-100 text-purple-700'
+                            }`}>
+                              {suggestion.difficulty}
+                            </span>
+                            <span className={`px-2 py-1 text-xs rounded ${
+                              darkMode 
+                                ? 'bg-purple-800 text-purple-300' 
+                                : 'bg-purple-100 text-purple-700'
+                            }`}>
+                              {suggestion.time}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {aiRecommendations.length > 0 && (
+                  <div>
+                    <h4 className={`font-semibold mb-3 flex items-center gap-2 ${
+                      darkMode ? 'text-purple-300' : 'text-purple-700'
+                    }`}>
+                      <Brain size={16} />
+                      Smart Recommendations
+                    </h4>
+                    <div className="space-y-4">
+                      {aiRecommendations.map((recommendation, index) => (
+                        <div 
+                          key={index} 
+                          className={`p-4 rounded-xl border ${theme.border} ${
+                            darkMode ? 'bg-purple-900/30' : 'bg-white'
+                          }`}
+                        >
+                          <h5 className={`font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            {recommendation.title}
+                          </h5>
+                          <p className={`text-sm mt-2 ${darkMode ? 'text-purple-200' : 'text-slate-700'}`}>
+                            {recommendation.description}
+                          </p>
+                          <div className={`text-xs mt-2 italic ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>
+                            {recommendation.reason}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Search & Filters */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-6 md:mb-8">
@@ -953,20 +1304,6 @@ const ProjectSuggestions = () => {
             />
           )}
         </AnimatePresence>
-        
-        {/* AI Version Note */}
-        <div className={`mt-8 p-4 rounded-xl text-center ${darkMode ? 'bg-purple-800/30 border border-purple-600' : 'bg-purple-50 border border-purple-200'}`}>
-          <p className={darkMode ? 'text-purple-200' : 'text-purple-700'}>
-            Want even more personalized project suggestions? Try our{' '}
-            <Link 
-              to="/studentpart/ai-project-suggestions" 
-              className={`font-semibold underline ${darkMode ? 'text-purple-300 hover:text-white' : 'text-purple-600 hover:text-purple-800'}`}
-            >
-              AI-powered Project Suggestions
-            </Link>{' '}
-            for tailored recommendations based on your skills and interests!
-          </p>
-        </div>
       </div>
     </div>
   );
@@ -1021,99 +1358,101 @@ const StepModal = ({ project, stepState, onClose, onToggleStep, onNavigate, dark
                 <div className={`text-sm font-semibold ${darkMode ? 'text-purple-300' : 'text-slate-600'}`}>
                   Progress: {progressPercent}%
                 </div>
-                <div className={`w-32 h-2 ${darkMode ? 'bg-purple-700' : 'bg-slate-100'} rounded-full overflow-hidden mt-1`}>
+                <div className={`w-32 h-2 ${darkMode ? 'bg-purple-700' : 'bg-slate-200'} rounded-full overflow-hidden mt-1`}>
                   <div 
-                    className="h-full bg-gradient-to-r from-purple-500 to-fuchsia-500 transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-purple-500 to-fuchsia-500 transition-all duration-500" 
                     style={{ width: `${progressPercent}%` }} 
                   />
                 </div>
               </div>
 
               <button 
-                onClick={onClose}
-                className={`p-2 rounded-full transition ${darkMode ? 'hover:bg-purple-800 text-purple-300' : 'hover:bg-slate-100 text-slate-600'}`}
+                onClick={onClose} 
+                className={`p-2 rounded-full hover:bg-purple-500/20 transition ${
+                  darkMode ? 'text-purple-300 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                }`}
               >
                 <X size={24} />
               </button>
             </div>
           </div>
 
-          {/* Main Content */}
+          {/* Content: Steps List & Current Step Detail */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Steps List */}
-            <div className="lg:col-span-2">
-              <h4 className={`font-bold text-lg mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                All Steps ({total})
+            <div className={`lg:col-span-2 p-4 rounded-xl border ${darkMode ? 'border-purple-600 bg-purple-800/30' : 'border-purple-300 bg-white'} max-h-[60vh] overflow-y-auto`}>
+              <h4 className={`font-bold mb-4 flex justify-between items-center ${
+                darkMode ? 'text-white' : 'text-slate-900'
+              }`}>
+                Project Steps ({completedSet.size}/{total})
+                <span className={`text-xs font-normal ${darkMode ? 'text-purple-400' : 'text-slate-500'}`}>
+                  Click a step for details
+                </span>
               </h4>
-              <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+              <div className="space-y-3">
                 {project.steps.map((step, i) => {
                   const done = completedSet.has(i);
                   const isActive = i === current;
+
                   return (
                     <motion.div
                       key={i}
-                      className={`p-4 rounded-xl cursor-pointer transition duration-200 ${
-                        isActive
+                      className={`p-4 rounded-lg cursor-pointer transition duration-200 flex items-start gap-3 ${
+                        isActive 
                           ? (darkMode 
-                              ? 'bg-gradient-to-r from-purple-800 to-fuchsia-800 border-2 border-purple-500 shadow-lg' 
-                              : 'bg-gradient-to-r from-purple-100 to-fuchsia-100 border-2 border-purple-500 shadow-lg')
-                          : done
+                              ? 'bg-gradient-to-r from-purple-700/50 to-fuchsia-700/50 border-2 border-purple-500 shadow-md' 
+                              : 'bg-gradient-to-r from-purple-100 to-fuchsia-100 border-2 border-purple-300 shadow-md')
+                          : done 
                             ? (darkMode 
-                                ? 'bg-purple-800/50 border border-purple-600' 
-                                : 'bg-fuchsia-50 border border-fuchsia-200')
+                                ? 'bg-emerald-900/20 border border-emerald-700' 
+                                : 'bg-emerald-50 border border-emerald-200')
                             : (darkMode 
-                                ? 'bg-purple-900/30 border border-purple-700 hover:bg-purple-800/50' 
+                                ? 'bg-purple-800/50 border border-purple-600 hover:bg-purple-700/50' 
                                 : 'bg-white border border-slate-200 hover:bg-slate-50')
                       }`}
                       onClick={() => onNavigate(i)}
                       whileHover={{ scale: 1.01 }}
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-start gap-3">
-                          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                            done 
-                              ? (darkMode ? 'bg-purple-600' : 'bg-purple-500')
-                              : (darkMode ? 'bg-purple-800' : 'bg-slate-100')
-                          }`}>
-                            {done ? (
-                              <Check size={16} className="text-white" />
-                            ) : (
-                              <span className={`text-sm font-bold ${isActive ? (darkMode ? 'text-white' : 'text-purple-600') : (darkMode ? 'text-purple-400' : 'text-slate-500')}`}>
-                                {i + 1}
-                              </span>
-                            )}
-                          </div>
-                          
-                          <div>
-                            <div className={`font-semibold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                              {step.title}
-                            </div>
-                            <div className={`text-xs mt-1 ${darkMode ? 'text-purple-300' : 'text-slate-600'}`}>
-                              {step.detail}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <button
-                          onClick={(e) => { e.stopPropagation(); onToggleStep(i); }}
-                          className={`min-w-max px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                            done
-                              ? (darkMode 
-                                  ? 'bg-purple-600 text-white hover:bg-purple-700' 
-                                  : 'bg-purple-600 text-white hover:bg-purple-700')
-                              : (darkMode 
-                                  ? 'bg-purple-800 text-purple-300 border border-purple-600 hover:bg-purple-700' 
-                                  : 'bg-white text-slate-600 border border-slate-300 hover:bg-slate-100')
-                          }`}
-                        >
-                          {done ? (
-                            <span className="flex items-center gap-1">
-                              <Check size={12} />
-                              Done
-                            </span>
-                          ) : "Mark as Done"}
-                        </button>
+                      <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5 ${
+                        done 
+                          ? (darkMode ? 'bg-emerald-700' : 'bg-emerald-500') 
+                          : (darkMode ? 'bg-purple-700' : 'bg-purple-500')
+                      }`}>
+                        {done ? (
+                          <Check size={16} className="text-white" />
+                        ) : (
+                          <span className={`text-xs font-bold ${darkMode ? 'text-purple-200' : 'text-white'}`}>
+                            {i + 1}
+                          </span>
+                        )}
                       </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className={`font-semibold text-sm ${done ? (darkMode ? 'text-emerald-300' : 'text-emerald-700') : (darkMode ? 'text-white' : 'text-slate-900')} ${done ? 'line-through' : ''}`}>
+                          {step.title}
+                        </div>
+                        <div className={`text-xs mt-1 ${darkMode ? 'text-purple-300' : 'text-slate-600'} line-clamp-2`}>
+                          {step.detail}
+                        </div>
+                      </div>
+                      
+                      <button
+                        onClick={(e) => { 
+                          e.stopPropagation(); 
+                          onToggleStep(i); 
+                        }}
+                        className={`min-w-max px-3 py-1 rounded-full text-xs font-semibold transition ${
+                          done 
+                            ? (darkMode 
+                                ? 'bg-emerald-700 text-white hover:bg-emerald-600' 
+                                : 'bg-emerald-500 text-white hover:bg-emerald-600')
+                            : (darkMode 
+                                ? 'bg-purple-700 text-purple-100 hover:bg-purple-600' 
+                                : 'bg-purple-100 text-purple-700 hover:bg-purple-200')
+                        }`}
+                      >
+                        {done ? "Completed" : "Mark Done"}
+                      </button>
                     </motion.div>
                   );
                 })}
@@ -1217,4 +1556,4 @@ const StepModal = ({ project, stepState, onClose, onToggleStep, onNavigate, dark
   );
 };
 
-export default ProjectSuggestions;
+export default AIProjectSuggestions;

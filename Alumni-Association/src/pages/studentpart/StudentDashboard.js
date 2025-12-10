@@ -421,6 +421,44 @@ const StudentDashboard = () => {
                 <p className="text-gray-700 text-sm sm:text-base">Micropledges and donation campaigns</p>
               </div>
             </Link>
+            
+            {/* AI Project Suggestions Card */}
+            <Link 
+              to="/studentpart/ai-project-suggestions" 
+              className="group"
+              onClick={triggerCelebration}
+              onMouseEnter={() => setHoveredCard('ai-projects')}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div className={`bg-white bg-opacity-80 rounded-xl shadow-lg p-5 sm:p-6 transition-all duration-300 transform ${hoveredCard === 'ai-projects' ? 'scale-105 -translate-y-2' : ''} border-l-4 border-blue-500 card-hover-effect`}>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 bg-opacity-90 rounded-xl mb-4 flex items-center justify-center transform group-hover:rotate-12 transition-transform">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold mb-2">AI Project Ideas</h3>
+                <p className="text-gray-700 text-sm sm:text-base">Get personalized project suggestions powered by AI</p>
+              </div>
+            </Link>
+            
+            {/* Resume Improver Card */}
+            <Link 
+              to="/studentpart/resume-improver" 
+              className="group"
+              onClick={triggerCelebration}
+              onMouseEnter={() => setHoveredCard('resume-improver')}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div className={`bg-white bg-opacity-80 rounded-xl shadow-lg p-5 sm:p-6 transition-all duration-300 transform ${hoveredCard === 'resume-improver' ? 'scale-105 -translate-y-2' : ''} border-l-4 border-blue-500 card-hover-effect`}>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-500 bg-opacity-90 rounded-xl mb-4 flex items-center justify-center transform group-hover:rotate-12 transition-transform">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold mb-2">Resume Improver</h3>
+                <p className="text-gray-700 text-sm sm:text-base">AI-powered resume analysis and optimization</p>
+              </div>
+            </Link>
           </div>
         </section>
         

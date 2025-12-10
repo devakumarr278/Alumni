@@ -165,12 +165,16 @@ export default function InstitutionPostCard({
       // Use the same base URL as the API
       const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5003';
       return `${baseUrl}${mediaItem.url}`;
+    // If it's a relative URL, prepend the API base URL (without /api)
+    if (typeof mediaItem.url === 'string' && mediaItem.url.startsWith('/')) {
+      return `http://localhost:5003${mediaItem.url}`;
     }
     
     return mediaItem.url;
   };
 
-  return (    <div className="w-[360px] h-[520px] bg-white rounded-xl shadow-sm flex-shrink-0 flex flex-col hover:shadow-lg transition-all">
+  return (
+    <div className="w-[360px] h-[520px] bg-white rounded-xl shadow-sm flex-shrink-0 flex flex-col hover:shadow-lg transition-all">
       
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b">
