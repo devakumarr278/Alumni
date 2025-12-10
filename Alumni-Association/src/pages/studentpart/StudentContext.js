@@ -6,8 +6,8 @@ const StudentContext = createContext();
 const mockStudentData = {
   profile: {
     id: 'stu_12345',
-    name: 'John Student',
-    email: 'john.student@skcet.ac.in',
+    name: 'Deva',
+    email: 'deva@skcet.ac.in',
     registerNumber: 'STU2024001',
     major: 'Computer Science',
     graduationYear: 2028,
@@ -199,105 +199,11 @@ export const StudentProvider = ({ children }) => {
         
         return {
           ...prev,
-          profile: {
-            ...prev.profile,
-            ...profileData,
-            // Calculate completeness based on filled fields
-            completeness: calculateProfileCompleteness({ ...prev.profile, ...profileData })
-          }
+          profile: { ...prev.profile, ...profileData }
         };
       });
     } catch (error) {
       console.error('Error updating profile:', error);
-    }
-  };
-
-  // Calculate profile completeness
-  const calculateProfileCompleteness = (profile) => {
-    try {
-      const fields = [
-        profile.name,
-        profile.email,
-        profile.major,
-        profile.graduationYear,
-        profile.phone,
-        profile.bio,
-        profile.skills && profile.skills.length > 0,
-        profile.domain,
-        profile.interests && profile.interests.length > 0
-      ];
-      
-      const filledFields = fields.filter(field => field).length;
-      return Math.round((filledFields / fields.length) * 100);
-    } catch (error) {
-      console.error('Error calculating profile completeness:', error);
-      return 0;
-    }
-  };
-
-  // Get user badges
-  const getUserBadges = () => {
-    try {
-      return badges || [];
-    } catch (error) {
-      console.error('Error getting user badges:', error);
-      return [];
-    }
-  };
-
-  // Add mentorship request
-  const addMentorshipRequest = (requestData) => {
-    try {
-      const newRequest = {
-        id: `req_${Date.now()}`,
-        ...requestData,
-        status: 'pending',
-        requestDate: new Date().toISOString()
-      };
-      
-      setStudentData(prev => {
-        if (!prev) return mockStudentData;
-        
-        return {
-          ...prev,
-          mentorship: {
-            ...prev.mentorship,
-            requests: [...(prev.mentorship?.requests || []), newRequest],
-            pendingRequests: (prev.mentorship?.pendingRequests || 0) + 1
-          }
-        };
-      });
-    } catch (error) {
-      console.error('Error adding mentorship request:', error);
-    }
-  };
-
-  // Update mentorship request
-  const updateMentorshipRequest = (requestId, status) => {
-    try {
-      setStudentData(prev => {
-        if (!prev) return mockStudentData;
-        
-        const updatedRequests = (prev.mentorship?.requests || []).map(request => 
-          request.id === requestId ? { ...request, status } : request
-        );
-        
-        return {
-          ...prev,
-          mentorship: {
-            ...prev.mentorship,
-            requests: updatedRequests,
-            pendingRequests: status === 'pending' 
-              ? prev.mentorship?.pendingRequests 
-              : Math.max(0, (prev.mentorship?.pendingRequests || 0) - 1),
-            activeMentors: status === 'accepted' 
-              ? (prev.mentorship?.activeMentors || 0) + 1 
-              : prev.mentorship?.activeMentors
-          }
-        };
-      });
-    } catch (error) {
-      console.error('Error updating mentorship request:', error);
     }
   };
 
@@ -307,116 +213,60 @@ export const StudentProvider = ({ children }) => {
       setStudentData(prev => {
         if (!prev) return mockStudentData;
         
-        const newSessions = (prev.badges?.mentorshipSessions || 0) + 1;
-        const newPoints = (prev.badges?.points || 0) + 20;
-        
-        // Check if user should earn "Mentor Ready" badge
-        let updatedBadges = [...badges];
-        if (newSessions >= 3 && !badges.find(b => b.id === 'badge_mentor_ready')) {
-          updatedBadges.push({
-            id: 'badge_mentor_ready',
-            name: 'Mentor Ready',
-            description: 'Complete 3 mentorship sessions',
-            icon: '🎓',
-            earnedDate: new Date().toISOString(),
-            type: 'mentorship'
-          });
-          setBadges(updatedBadges);
-        }
-        
         return {
           ...prev,
           badges: {
             ...prev.badges,
-            mentorshipSessions: newSessions,
-            points: newPoints
+            mentorshipSessions: (prev.badges?.mentorshipSessions || 0) + 1
           }
         };
       });
+      
+      // Add a new badge for mentorship session completion
+      const newBadge = {
+        id: `badge_${Date.now()}`,
+        name: 'Mentorship Session Completed',
+        description: 'Successfully completed a mentorship session',
+        icon: '🎓',
+        earnedDate: new Date().toISOString().split('T')[0],
+        type: 'mentorship'
+      };
+      
+      setBadges(prev => [...prev, newBadge]);
     } catch (error) {
       console.error('Error completing mentorship session:', error);
     }
   };
 
-  // Submit verification request
-  const submitVerificationRequest = (badgeType, documents) => {
-    try {
-      // In a real app, this would send to a server
-      console.log('Verification request submitted:', { badgeType, documents });
-      
-      // Add the verification request to the student data
-      const newRequest = {
-        id: `vr_${Date.now()}`,
-        badgeType,
-        submissionDate: new Date().toISOString(),
-        status: 'pending',
-        documents
-      };
-      
-      setStudentData(prev => {
-        if (!prev) return mockStudentData;
-        
-        return {
-          ...prev,
-          badges: {
-            ...prev.badges,
-            verificationRequests: [...(prev.badges?.verificationRequests || []), newRequest]
-          }
-        };
-      });
-      
-      // Simulate processing delay
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({ success: true, message: 'Verification request submitted successfully!' });
-        }, 1000);
-      });
-    } catch (error) {
-      console.error('Error submitting verification request:', error);
-      return Promise.reject(error);
-    }
+  // Get user badges
+  const getUserBadges = () => {
+    return badges;
   };
 
-  // Check if user has a specific badge
-  const hasUserBadge = (badgeType) => {
-    try {
-      return badges.some(badge => badge.type === badgeType);
-    } catch (error) {
-      console.error('Error checking user badge:', error);
-      return false;
-    }
-  };
-
-  const value = {
-    studentData: studentData || mockStudentData,
-    badges: badges || mockBadges,
-    updateProfile,
-    getUserBadges,
-    addMentorshipRequest,
-    updateMentorshipRequest,
-    completeMentorshipSession,
-    submitVerificationRequest,
-    hasUserBadge,
-    isSidebarOpen, // Export sidebar state
-    setIsSidebarOpen // Export sidebar state setter
+  // Toggle sidebar
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
   };
 
   return (
-    <StudentContext.Provider value={value}>
+    <StudentContext.Provider value={{ 
+      studentData, 
+      updateProfile, 
+      completeMentorshipSession, 
+      getUserBadges, 
+      badges, 
+      isSidebarOpen, 
+      toggleSidebar 
+    }}>
       {children}
     </StudentContext.Provider>
   );
 };
 
-// Custom hook with proper error handling
-export function useStudent() {
-  try {
-    const context = useContext(StudentContext);
-    return context;
-  } catch (error) {
-    console.error('Error in useStudent hook:', error);
-    return null;
+export const useStudent = () => {
+  const context = useContext(StudentContext);
+  if (!context) {
+    throw new Error('useStudent must be used within a StudentProvider');
   }
-}
-
-export default StudentContext;
+  return context;
+};
