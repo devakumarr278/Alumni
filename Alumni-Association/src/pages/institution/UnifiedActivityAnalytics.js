@@ -15,7 +15,7 @@ const UnifiedActivityAnalytics = () => {
   const [loading, setLoading] = useState(false);
   
   // Use the environment variable for the API base URL
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5003/api';
 
   // Fetch data from backend API
   const fetchActivityData = async () => {

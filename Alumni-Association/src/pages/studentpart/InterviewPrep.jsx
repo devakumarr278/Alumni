@@ -94,6 +94,8 @@ const InterviewPrep = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [practiceHistory, setPracticeHistory] = useState([]);
+
+  // Mock interview questions
   const [targetPosition, setTargetPosition] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -202,6 +204,13 @@ const InterviewPrep = () => {
       });
       
       // Add AI feedback
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: prev.length + 1,
+          sender: 'ai',
+          text: 'Great response! You covered the key points well. Consider elaborating more on the practical applications.',
+          timestamp: new Date()
+        }]);
       setTimeout(async () => {
         setIsLoading(true);
         try {
@@ -232,6 +241,7 @@ const InterviewPrep = () => {
     }
   };
 
+  const sendMessage = () => {
   const sendMessage = async () => {
     if (inputMessage.trim()) {
       const newMessage = {
@@ -242,6 +252,17 @@ const InterviewPrep = () => {
       };
       
       setMessages(prev => [...prev, newMessage]);
+      setInputMessage('');
+      
+      // Simulate AI response
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          id: prev.length + 1,
+          sender: 'ai',
+          text: 'That\'s a thoughtful question. Based on your profile and the position you\'re targeting, I recommend focusing on...',
+          timestamp: new Date()
+        }]);
+      }, 1000);
       const userInput = inputMessage;
       setInputMessage('');
       
@@ -556,6 +577,7 @@ const InterviewPrep = () => {
                     onChange={(e) => setInputMessage(e.target.value)}
                     placeholder="Ask a question or type your answer..."
                     className="w-full p-4 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                     onKeyPress={(e) => e.key === 'Enter' && !isLoading && sendMessage()}
                     disabled={isLoading}
                   />
@@ -568,6 +590,7 @@ const InterviewPrep = () => {
                   </button>
                 </div>
                 
+                <button className="p-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
                 <button className="p-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors" disabled={isLoading}>
                   <RotateCcw size={20} className="text-gray-600" />
                 </button>

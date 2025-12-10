@@ -25,7 +25,7 @@ const VerifyEmail = () => {
 
       try {
         // Call backend API to verify email
-        const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/verify-email?token=${token}&email=${email}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/verify-email?token=${token}&email=${email}`);
         const data = await res.json();
 
         if (data.success) {

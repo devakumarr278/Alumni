@@ -1,6 +1,6 @@
 @echo off
 echo Starting backend server...
-start "Backend" /D "D:\vijayawadahackathon\Alumni\Alumni-Association\backend" cmd /c "node server.js"
+start "Backend" /D "d:\New folder (2)\Alumni\Alumni-Association\backend" cmd /c "node server.js"
 timeout /t 5
 echo Starting frontend...
-start "Frontend" /D "D:\vijayawadahackathon\Alumni\Alumni-Association" cmd /c "npm start"
+start "Frontend" /D "d:\New folder (2)\Alumni\Alumni-Association" cmd /c "npm start"

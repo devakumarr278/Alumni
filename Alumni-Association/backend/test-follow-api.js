@@ -9,7 +9,7 @@ async function testFollowAPI() {
     // Let's simulate what the frontend would do
     
     // First, let's try to get follow requests without authentication
-    const response = await fetch('http://localhost:5005/api/follow/requests');
+    const response = await fetch('http://localhost:5003/api/follow/requests');
     
     console.log('Response status (no auth):', response.status);
     

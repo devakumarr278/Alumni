@@ -21,6 +21,8 @@ const notificationRoutes = require('./routes/notification');
 const slotRoutes = require('./routes/slots');
 const analyticsRoutes = require('./routes/analytics');
 const postRoutes = require('./routes/posts');
+const connectionsRoutes = require('./routes/connections');
+const analyzeRoutes = require('./routes/analyzeRoute');
 
 // Import WebSocket server
 const WebSocketServer = require('./webSocketServer');
@@ -64,6 +66,8 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/slots', slotRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/connections', connectionsRoutes);
+app.use('/api/analyze', analyzeRoutes);
 console.log('Posts routes mounted at /api/posts');
 console.log('Routes set up successfully');
 console.log('Auth routes mounted at /api/auth');
@@ -105,10 +109,12 @@ server.listen(PORT, () => {
   const { setWebSocketServer: setNotificationWebSocketServer } = require('./controllers/notificationController');
   const { setWebSocketServer: setFollowWebSocketServer } = require('./controllers/followController');
   const { setWebSocketServer: setSlotWebSocketServer } = require('./controllers/slotController');
+  const { setWebSocketServer: setConnectionWebSocketServer } = require('./controllers/connectionController');
   
   setNotificationWebSocketServer(webSocketServer);
   setFollowWebSocketServer(webSocketServer);
   setSlotWebSocketServer(webSocketServer);
+  setConnectionWebSocketServer(webSocketServer);
 }).on('error', (err) => {
   console.error('Server error:', err);
   process.exit(1);

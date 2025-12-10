@@ -5,7 +5,7 @@ const WebSocket = require('ws');
 async function testWebSocket() {
   try {
     // Use the same base URL as the API but with ws protocol and notifications path
-    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5003';
     const wsBaseUrl = baseUrl.replace('http', 'ws');
     const wsUrl = `${wsBaseUrl}/notifications?token=test-token`;
     

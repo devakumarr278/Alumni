@@ -94,6 +94,7 @@ const ICONS = {
   Wifi, Users, Eye, Music, Camera, Video, MessageSquare, ShoppingCart, CreditCard,
   FileText, PieChart, LineChart, FileCode, Workflow, Bug, Network, Key, Scan,
   ShieldAlert, Clipboard, TestTube, Code2, Bot, Sparkles, Calendar, Bell, Map,
+  Upload, Download, Fingerprint
   Upload, Download, Hash, Fingerprint
 };
 

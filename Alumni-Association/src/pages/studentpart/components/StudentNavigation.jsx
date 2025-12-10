@@ -57,6 +57,25 @@ const StudentNavigation = ({ isCollapsed: propIsCollapsed, onToggleSidebar: prop
 
   const navigationItems = [
     { path: '/studentpart/dashboard', name: 'Dashboard', icon: '🏠', color: 'from-blue-500 to-cyan-500' },
+    { path: '/studentpart/profile', name: 'Profile', icon: '👤', color: 'from-purple-500 to-pink-500' },
+    { path: '/studentpart/portfolio', name: 'Portfolio', icon: '🖼️', color: 'from-pink-500 to-rose-500' },
+    { path: '/studentpart/directory', name: 'Alumni Directory', icon: '📋', color: 'from-amber-500 to-orange-500' },
+    { path: '/studentpart/mentorship', name: 'Mentorship', icon: '🤝', color: 'from-emerald-500 to-teal-500' },
+    {     path: '/studentpart/skill-analyzer', name: 'Skill Analyzer', icon: '🧠', color: 'from-purple-500 to-indigo-500' },
+    { path: '/studentpart/resume-improver', name: 'Resume Improver', icon: '📄', color: 'from-blue-500 to-cyan-500' },
+    { path: '/studentpart/roadmap', name: 'Career Roadmap', icon: '🛣️', color: 'from-indigo-500 to-blue-500' },
+    // New AI-powered features
+    { path: '/studentpart/daily-tasks', name: 'Daily Tasks', icon: '✅', color: 'from-green-500 to-emerald-500' },
+    { path: '/studentpart/project-suggestions', name: 'Project Ideas', icon: '💡', color: 'from-amber-500 to-yellow-500' },
+    { path: '/studentpart/interview-prep', name: 'Interview Prep', icon: '🎤', color: 'from-rose-500 to-red-500' },
+    { path: '/studentpart/skill-gap', name: 'Skill Gap', icon: '📈', color: 'from-teal-500 to-green-500' },
+    { path: '/studentpart/industry-insights', name: 'Industry Insights', icon: '📊', color: 'from-violet-500 to-purple-500' },
+    { path: '/studentpart/mentorship-tracker', name: 'Mentorship Tracker', icon: '📊', color: 'from-cyan-500 to-blue-500' },
+    { path: '/studentpart/events', name: 'Events', icon: '📅', color: 'from-violet-500 to-purple-500' },
+    { path: '/studentpart/badges', name: 'Badges', icon: '🏆', color: 'from-yellow-500 to-amber-500' },
+    { path: '/studentpart/notifications', name: 'Notifications', icon: '🔔', color: 'from-cyan-500 to-blue-500' },
+    { path: '/studentpart/jobs', name: 'Jobs', icon: '💼', color: 'from-rose-500 to-red-500' },
+    { path: '/studentpart/pledges', name: 'Pledges', icon: '💰', color: 'from-green-500 to-emerald-500' }
     //{ path: '/studentpart/profile', name: 'Profile', icon: '👤', color: 'from-purple-500 to-pink-500' },
     { path: '/studentpart/portfolio', name: 'Portfolio', icon: '🖼️', color: 'from-pink-500 to-rose-500' },
     { path: '/studentpart/directory', name: 'Alumni Directory', icon: '📋', color: 'from-amber-500 to-orange-500' },

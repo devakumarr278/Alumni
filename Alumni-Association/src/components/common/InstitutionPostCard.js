@@ -160,6 +160,11 @@ export default function InstitutionPostCard({
       return '';
     }
     
+    // If it's a relative URL, prepend the API base URL
+    if (typeof mediaItem.url === 'string' && mediaItem.url.startsWith('/')) {
+      // Use the same base URL as the API
+      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5003';
+      return `${baseUrl}${mediaItem.url}`;
     // If it's a relative URL, prepend the API base URL (without /api)
     if (typeof mediaItem.url === 'string' && mediaItem.url.startsWith('/')) {
       return `http://localhost:5003${mediaItem.url}`;

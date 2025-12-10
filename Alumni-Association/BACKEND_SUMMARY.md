@@ -173,8 +173,8 @@ backend/
 
 ### 🚀 Current Status
 
-**✅ Backend Server:** Running successfully on http://localhost:5000
-**✅ Health Check:** http://localhost:5000/api/health returns OK
+**✅ Backend Server:** Running successfully on http://localhost:5003
+**✅ Health Check:** http://localhost:5003/api/health returns OK
 **✅ Database:** MongoDB connection configured (local/Atlas ready)
 **✅ Email Service:** Gmail SMTP configured and ready
 **✅ API Documentation:** All endpoints documented and tested

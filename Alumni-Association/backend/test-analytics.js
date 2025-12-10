@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 // Test the new analytics endpoints
-const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = 'http://localhost:5003/api';
 
 async function testAnalyticsEndpoints() {
   try {

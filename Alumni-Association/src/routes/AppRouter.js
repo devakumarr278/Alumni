@@ -67,6 +67,13 @@ import MentorshipCalendar from '../pages/aluminilogin/MentorshipCalendar';
 import CompletedRequests from '../pages/aluminilogin/CompletedRequests';
 import FollowRequestsPage from '../pages/aluminilogin/FollowRequests';
 
+// Import new alumni components
+import AlumniKnowledgePosts from '../pages/aluminilogin/AlumniKnowledgePosts';
+import CommunicationHub from '../pages/aluminilogin/CommunicationHub';
+import InstitutionEventsFeed from '../pages/aluminilogin/InstitutionEventsFeed';
+import PostOpportunities from '../pages/aluminilogin/PostOpportunities';
+import AlumniStudentChat from '../pages/aluminilogin/AlumniStudentChat';
+
 import TestFollowRequests from '../pages/aluminilogin/TestFollowRequests';
 import SimpleTest from '../pages/aluminilogin/SimpleTest';
 import ComponentTest from '../pages/aluminilogin/ComponentTest';
@@ -87,6 +94,18 @@ import StudentBadges from '../pages/studentpart/badges';
 import StudentNotifications from '../pages/studentpart/notifications';
 import StudentPledges from '../pages/studentpart/pledges';
 import TestProfile from '../pages/studentpart/TestProfile';
+
+// New AI-powered student features
+import SkillAnalyzer from '../pages/studentpart/SkillAnalyzer';
+import ResumeImprover from '../pages/studentpart/ResumeImprover';
+import DailyTasks from '../pages/studentpart/DailyTasks';
+import ProjectSuggestions from '../pages/studentpart/ProjectSuggestions';
+import InterviewPrep from '../pages/studentpart/InterviewPrep';
+import SkillGapAnalyzer from '../pages/studentpart/SkillGapAnalyzer';
+import IndustryInsights from '../pages/studentpart/IndustryInsights';
+import StudentPortfolio from '../pages/studentpart/Portfolio';
+import MentorshipTracker from '../pages/studentpart/MentorshipTracker';
+import StudentLayout from '../layout/StudentLayout';
 
 // New AI-powered student features
 import SkillAnalyzer from '../pages/studentpart/SkillAnalyzer';
@@ -303,6 +322,11 @@ const AppRouter = () => {
             </>
             <Route index element={<NewAlumniDashboard />} />
             <Route path="dashboard" element={<NewAlumniDashboard />} />
+            <Route path="knowledge-posts" element={<AlumniKnowledgePosts />} />
+            <Route path="communication-hub" element={<CommunicationHub />} />
+            <Route path="institution-events" element={<InstitutionEventsFeed />} />
+            <Route path="opportunities" element={<PostOpportunities />} />
+            <Route path="chat" element={<AlumniStudentChat />} />
             <Route path="profile" element={<AlumniProfile />} />
             <Route path="connections" element={<Connections />} />
             <Route path="events" element={<MyEvents />} />
@@ -406,6 +430,7 @@ const AppRouter = () => {
                       <Route path="industry-insights" element={<IndustryInsights />} />
                       <Route path="portfolio" element={<StudentPortfolio />} />
                       <Route path="mentorship-tracker" element={<MentorshipTracker />} />
+
                       <Route path="test-profile" element={<TestProfile />} />
                     </Routes>
                   </StudentLayout>

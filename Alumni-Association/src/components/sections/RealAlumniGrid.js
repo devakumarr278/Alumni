@@ -28,7 +28,7 @@ const RealAlumniGrid = ({ searchQuery = '', filters = {} }) => {
         });
         
         // Make API call to fetch real alumni data
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/alumni?${queryParams}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/alumni?${queryParams}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch alumni data');

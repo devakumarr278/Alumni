@@ -3,7 +3,7 @@ async function testAlumniAPI() {
     console.log('Testing alumni API...');
     
     // Test getting all alumni
-    const allAlumniResponse = await fetch('http://localhost:5000/api/alumni');
+    const allAlumniResponse = await fetch('http://localhost:5003/api/alumni');
     const allAlumniData = await allAlumniResponse.json();
     console.log('All alumni response:', allAlumniData);
     
@@ -11,7 +11,7 @@ async function testAlumniAPI() {
     const alumniId = '68f219e4bcda074ebf6ffe05';
     console.log('Testing specific alumni with ID:', alumniId);
     
-    const alumniResponse = await fetch(`http://localhost:5000/api/alumni/${alumniId}`);
+    const alumniResponse = await fetch(`http://localhost:5003/api/alumni/${alumniId}`);
     console.log('Response status:', alumniResponse.status);
     
     if (alumniResponse.ok) {
@@ -24,7 +24,7 @@ async function testAlumniAPI() {
     
     // Test creating a follow request
     console.log('Testing follow request...');
-    const followResponse = await fetch('http://localhost:5000/api/follow', {
+    const followResponse = await fetch('http://localhost:5003/api/follow', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

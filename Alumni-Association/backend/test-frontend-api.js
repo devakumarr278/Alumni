@@ -9,7 +9,7 @@ async function testFrontendAPI() {
     const alumniId = '68f219e4bcda074ebf6ffe05';
     
     // Test the alumni profile endpoint
-    const response = await fetch(`http://localhost:5005/api/alumni/${alumniId}`);
+    const response = await fetch(`http://localhost:5003/api/alumni/${alumniId}`);
     
     console.log('Response status:', response.status);
     console.log('Response URL:', response.url);
@@ -23,7 +23,7 @@ async function testFrontendAPI() {
     }
     
     // Also test the profile endpoint
-    const profileResponse = await fetch(`http://localhost:5005/api/alumni/${alumniId}/profile`);
+    const profileResponse = await fetch(`http://localhost:5003/api/alumni/${alumniId}/profile`);
     
     console.log('Profile response status:', profileResponse.status);
     console.log('Profile response URL:', profileResponse.url);
