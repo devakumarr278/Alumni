@@ -2,7 +2,7 @@
 const WebSocket = require('ws');
 
 // Connect to WebSocket server
-const ws = new WebSocket('ws://localhost:5000/notifications?token=YOUR_JWT_TOKEN_HERE');
+const ws = new WebSocket('ws://localhost:5003/notifications?token=YOUR_JWT_TOKEN_HERE');
 
 ws.on('open', function open() {
   console.log('Connected to WebSocket server');

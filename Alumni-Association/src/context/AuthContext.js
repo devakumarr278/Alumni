@@ -66,7 +66,7 @@ export function AuthProvider({ children }) {
       setLoading(true);
       
       // Actual API call for login
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/login`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -212,7 +212,7 @@ export function AuthProvider({ children }) {
       console.log('Mapped backend data:', backendData);
       
       // Call the actual backend API for registration
-      const apiUrl = `${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/register`;
+      const apiUrl = `${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/register`;
       console.log('Making request to:', apiUrl);
       console.log('Request data:', JSON.stringify(backendData, null, 2));
       
@@ -295,7 +295,7 @@ export function AuthProvider({ children }) {
       // Check if the verificationCode is a 6-digit number (OTP) or a token (link)
       if (/^\d{6}$/.test(verificationCode)) {
         // It's an OTP code, use the new OTP verification endpoint
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/verify-email-code`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/verify-email-code`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -369,7 +369,7 @@ export function AuthProvider({ children }) {
         }
       } else {
         // It's a token/link verification, use the existing endpoint
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/verify-email?token=${verificationCode}&email=${pendingRegistration.email}`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/verify-email?token=${verificationCode}&email=${pendingRegistration.email}`);
         
         const data = await response.json();
         console.log('Email verification response:', data);
@@ -487,7 +487,7 @@ export function AuthProvider({ children }) {
     
     try {
       // Call the actual backend API to resend verification email
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/auth/resend-verification`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/resend-verification`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

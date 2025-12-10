@@ -232,6 +232,21 @@ class WebSocketServer {
     });
   }
 
+  // Send connection update to a specific user
+  sendConnectionUpdate(userId, data) {
+    const ws = this.clients.get(userId.toString());
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      try {
+        ws.send(JSON.stringify({
+          type: 'connection_update',
+          data: data
+        }));
+      } catch (error) {
+        console.error(`Error sending connection update to user ${userId}:`, error);
+      }
+    }
+  }
+
   close() {
     this.wss.close();
     this.clients.clear();

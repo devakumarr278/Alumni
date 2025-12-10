@@ -10,7 +10,7 @@
 const https = require('https');
 
 // Configuration
-const BASE_URL = 'http://localhost:5000'; // Adjust to your backend URL
+const BASE_URL = 'http://localhost:5003'; // Adjust to your backend URL
 const API_ENDPOINT = '/api/analytics/activity';
 
 /**

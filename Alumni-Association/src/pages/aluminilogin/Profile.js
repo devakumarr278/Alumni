@@ -179,23 +179,22 @@ const AlumniProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        setLoading(true);
-        setError('');
-        
-        // Get token from localStorage
         const token = localStorage.getItem('token');
         if (!token) {
-          throw new Error('No authentication token found');
+          console.error('No token found');
+          return;
         }
-        
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/profile`, {
+
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/profile`, {
+          method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
           // Fix: The backend returns user data directly in data.data, not data.user
           setUser(data.data);
@@ -385,6 +384,40 @@ const AlumniProfile = () => {
       setError(err.message || 'Failed to update profile');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    try {
+      setIsUpdating(true);
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSuccess('Profile updated successfully!');
+        setIsEditing(false);
+        // Re-fetch the profile to ensure we have the latest data
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        throw new Error(data.message || 'Failed to update profile');
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to update profile');
+    } finally {
+      setIsUpdating(false);
     }
   };
 

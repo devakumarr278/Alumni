@@ -54,7 +54,7 @@ const StudentProfile = () => {
           throw new Error('No authentication token found');
         }
         
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/profile`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/profile`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ const StudentProfile = () => {
         }
       });
       
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/profile`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -1483,4 +1483,41 @@ const StudentProfile = () => {
                     <h3 className="text-lg font-semibold">Request Badge Verification</h3>
                     <button 
                       onClick={() => document.getElementById('badge-verification-modal').classList.add('hidden')}
-                      className="
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="mb-4">
+                    <p className="text-gray-600">
+                      Request verification for badges you've earned through external activities or achievements.
+                      Our team will review your submission and award appropriate badges.
+                    </p>
+                  </div>
+                  <BadgeVerificationRequest />
+                </div>
+              </div>
+            </div>
+
+            {/* Test WebSocket Connection Button - Only visible in development */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 border border-gray-200">
+                <h3 className="font-medium mb-2">Development Tools</h3>
+                <button 
+                  onClick={handleTestMentorshipSession}
+                  className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                >
+                  Test Mentorship Session
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StudentProfile;

@@ -153,6 +153,11 @@ const AlumniSidebar = ({ isSidebarOpen, setIsSidebarOpen, userEmail }) => {
 
   const sidebarItems = [
     { path: '/alumni/dashboard', name: 'Dashboard', icon: '🏠' },
+    { path: '/alumni/knowledge-posts', name: 'Knowledge Posts', icon: '📚' },
+    { path: '/alumni/communication-hub', name: 'Communication Hub', icon: '💬' },
+    { path: '/alumni/chat', name: 'Student Chat', icon: '💬' },
+    { path: '/alumni/institution-events', name: 'Institution Events', icon: '🏛️' },
+    { path: '/alumni/opportunities', name: 'Opportunities', icon: '✨' },
     { path: '/alumni/profile', name: 'Profile & Verification', icon: '👤' },
     { 
       name: 'Mentorship', 
@@ -173,7 +178,6 @@ const AlumniSidebar = ({ isSidebarOpen, setIsSidebarOpen, userEmail }) => {
     { path: '/alumni/notifications', name: 'Notifications', icon: '🔔' },
     { path: '/alumni/follow-requests', name: 'Follow Requests', icon: '📩' },
   ];
-
   // Update active item when location changes
   useEffect(() => {
     setActiveItem(location.pathname);

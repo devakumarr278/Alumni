@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext';
 const PostContext = createContext();
 
 // Use the environment variable for the API base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5003/api';
 
 export const usePosts = () => {
   const context = useContext(PostContext);
@@ -51,7 +51,7 @@ export const PostProvider = ({ children }) => {
     try {
       const formData = new FormData();
       
-      // Append post data as JSON string
+      // Append post data
       formData.append('author', postData.author);
       formData.append('caption', postData.caption);
       formData.append('visibility', postData.visibility || 'public');
@@ -69,8 +69,7 @@ export const PostProvider = ({ children }) => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: formData
-      });
-      
+      });      
       const result = await response.json();
       
       if (result.success) {

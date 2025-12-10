@@ -26,7 +26,7 @@ const RealAlumniFilter = ({ onFilter }) => {
     const fetchFilterOptions = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/alumni/filters`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5003/api'}/alumni/filters`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch filter options');

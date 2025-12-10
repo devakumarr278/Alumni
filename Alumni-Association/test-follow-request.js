@@ -5,7 +5,7 @@ async function testFollowRequest() {
     
     // First, let's get a list of alumni
     console.log('Fetching alumni list...');
-    const alumniResponse = await fetch('http://localhost:5000/api/alumni');
+    const alumniResponse = await fetch('http://localhost:5003/api/alumni');
     
     if (!alumniResponse.ok) {
       const errorText = await alumniResponse.text();
@@ -22,7 +22,7 @@ async function testFollowRequest() {
       console.log('Attempting to follow alumni:', alumniToFollow.firstName, alumniToFollow.lastName);
       
       // Create follow request
-      const followResponse = await fetch('http://localhost:5000/api/follow', {
+      const followResponse = await fetch('http://localhost:5003/api/follow', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

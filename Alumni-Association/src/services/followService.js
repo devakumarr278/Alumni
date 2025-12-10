@@ -1,5 +1,5 @@
 // Follow service to interact with the backend API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5005/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5003/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {

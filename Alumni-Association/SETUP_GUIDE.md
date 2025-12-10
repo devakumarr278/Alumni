@@ -106,7 +106,7 @@ Edit `.env` file in the root directory:
 
 ```env
 # API Configuration
-REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_API_URL=http://localhost:5003/api
 
 # App Configuration
 REACT_APP_APP_NAME=Alumni Association
@@ -120,7 +120,7 @@ REACT_APP_VERSION=1.0.0
 cd backend
 npm run dev
 ```
-The backend will run on http://localhost:5000
+The backend will run on http://localhost:5003
 
 #### Start Frontend (Terminal 2)
 ```bash
@@ -131,7 +131,7 @@ The frontend will run on http://localhost:3000
 
 ### 6. Test the Setup
 
-1. **Backend Health Check**: Visit http://localhost:5000/api/health
+1. **Backend Health Check**: Visit http://localhost:5003/api/health
 2. **Frontend**: Visit http://localhost:3000
 3. **Database Connection**: Check the backend terminal for "Connected to MongoDB"
 

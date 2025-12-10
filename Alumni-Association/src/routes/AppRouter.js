@@ -67,6 +67,13 @@ import MentorshipCalendar from '../pages/aluminilogin/MentorshipCalendar';
 import CompletedRequests from '../pages/aluminilogin/CompletedRequests';
 import FollowRequestsPage from '../pages/aluminilogin/FollowRequests';
 
+// Import new alumni components
+import AlumniKnowledgePosts from '../pages/aluminilogin/AlumniKnowledgePosts';
+import CommunicationHub from '../pages/aluminilogin/CommunicationHub';
+import InstitutionEventsFeed from '../pages/aluminilogin/InstitutionEventsFeed';
+import PostOpportunities from '../pages/aluminilogin/PostOpportunities';
+import AlumniStudentChat from '../pages/aluminilogin/AlumniStudentChat';
+
 import TestFollowRequests from '../pages/aluminilogin/TestFollowRequests';
 import SimpleTest from '../pages/aluminilogin/SimpleTest';
 import ComponentTest from '../pages/aluminilogin/ComponentTest';
@@ -303,6 +310,11 @@ const AppRouter = () => {
             </>
             <Route index element={<NewAlumniDashboard />} />
             <Route path="dashboard" element={<NewAlumniDashboard />} />
+            <Route path="knowledge-posts" element={<AlumniKnowledgePosts />} />
+            <Route path="communication-hub" element={<CommunicationHub />} />
+            <Route path="institution-events" element={<InstitutionEventsFeed />} />
+            <Route path="opportunities" element={<PostOpportunities />} />
+            <Route path="chat" element={<AlumniStudentChat />} />
             <Route path="profile" element={<AlumniProfile />} />
             <Route path="connections" element={<Connections />} />
             <Route path="events" element={<MyEvents />} />

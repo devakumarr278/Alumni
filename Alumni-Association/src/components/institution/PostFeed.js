@@ -94,7 +94,6 @@ export default function PostFeed() {
       alert("Failed to create post. Please try again.");
     }
   };
-
   const handleLike = (id) => {
     // This will be handled by the PostCard component now
   };
