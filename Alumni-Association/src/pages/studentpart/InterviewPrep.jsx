@@ -2,6 +2,89 @@ import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Square, RotateCcw, MessageCircle, User, Bot, Send, BookOpen, Target, Zap, Award } from 'lucide-react';
 
+// AI Service for Gemini API integration
+class AIService {
+  constructor(apiKey) {
+    if (!apiKey) {
+      throw new Error('API key is required for AI service');
+    }
+    this.apiKey = apiKey;
+    // Using the same configuration as your working curl command
+    this.apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  }
+
+  async generateResponse(prompt) {
+    try {
+      console.log('Making API request to:', this.apiUrl.split('&')[0].split('?')[0] + '?key=***'); // Hide API key in logs
+      console.log('Prompt length:', prompt.length);
+      
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: prompt
+            }]
+          }]
+        })
+      });
+
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText.substring(0, 200) + '...'); // Limit log size
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('API Response received, candidates:', data.candidates ? data.candidates.length : 0);
+      
+      // Check if we have a valid response
+      if (!data.candidates || data.candidates.length === 0) {
+        throw new Error('No candidates returned from API');
+      }
+      
+      // Check if the response has valid content
+      if (!data.candidates[0].content || !data.candidates[0].content.parts || data.candidates[0].content.parts.length === 0) {
+        throw new Error('No content returned from API');
+      }
+      
+      return data.candidates[0].content.parts[0].text;
+    } catch (error) {
+      console.error('Error generating AI response:', error.message);
+      return "I'm having trouble connecting to the AI service right now. Please try again.";
+    }
+  }
+
+  async generateInterviewQuestion(position, category) {
+    const prompt = `Generate a realistic ${category} interview question for a ${position} position. Return only the question text without any additional formatting.`;
+    return await this.generateResponse(prompt);
+  }
+
+  async generateFeedback(answer, question, position) {
+    const prompt = `Provide constructive feedback for this interview answer to the question "${question}" for a ${position} position. 
+    Focus on:
+    1. Strengths of the answer
+    2. Areas for improvement
+    3. Specific suggestions
+    
+    Keep the feedback concise but helpful. Format as plain text without markdown.`;
+    
+    return await this.generateResponse(`${prompt}\n\nAnswer: ${answer}`);
+  }
+
+  async generateFollowUpQuestion(previousQuestion, answer, position) {
+    const prompt = `Based on this interview question: "${previousQuestion}" and the candidate's answer: "${answer}", 
+    generate a relevant follow-up question for a ${position} position that probes deeper into their experience or knowledge.`;
+    
+    return await this.generateResponse(prompt);
+  }
+}
+
 const InterviewPrep = () => {
   const [activeTab, setActiveTab] = useState('questions');
   const [isRecording, setIsRecording] = useState(false);
@@ -11,8 +94,11 @@ const InterviewPrep = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [practiceHistory, setPracticeHistory] = useState([]);
+  const [targetPosition, setTargetPosition] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Mock interview questions
+  // Initialize AI service with the provided API key
+  const aiService = new AIService("AIzaSyCV3DcNTPm5i3pg1QppuhrH395v50yCLjg");  // Mock interview questions
   const technicalQuestions = useMemo(() => [
     {
       id: 1,
@@ -116,18 +202,37 @@ const InterviewPrep = () => {
       });
       
       // Add AI feedback
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          id: prev.length + 1,
-          sender: 'ai',
-          text: 'Great response! You covered the key points well. Consider elaborating more on the practical applications.',
-          timestamp: new Date()
-        }]);
+      setTimeout(async () => {
+        setIsLoading(true);
+        try {
+          const lastUserMessage = messages[messages.length - 1];
+          const feedback = await aiService.generateFeedback(
+            lastUserMessage.text, 
+            currentQuestion.question, 
+            targetPosition || 'software developer'
+          );
+          
+          setMessages(prev => [...prev, {
+            id: prev.length + 1,
+            sender: 'ai',
+            text: feedback,
+            timestamp: new Date()
+          }]);
+        } catch (error) {
+          setMessages(prev => [...prev, {
+            id: prev.length + 1,
+            sender: 'ai',
+            text: 'I\'m having trouble generating feedback right now. Please try again.',
+            timestamp: new Date()
+          }]);
+        } finally {
+          setIsLoading(false);
+        }
       }, 1000);
     }
   };
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (inputMessage.trim()) {
       const newMessage = {
         id: messages.length + 1,
@@ -137,17 +242,70 @@ const InterviewPrep = () => {
       };
       
       setMessages(prev => [...prev, newMessage]);
+      const userInput = inputMessage;
       setInputMessage('');
       
-      // Simulate AI response
-      setTimeout(() => {
+      // Handle initial position question
+      if (messages.length === 1) {
+        setTargetPosition(userInput);
+        setIsLoading(true);
+        try {
+          const question = await aiService.generateInterviewQuestion(userInput, 'technical');
+          setMessages(prev => [...prev, {
+            id: prev.length + 1,
+            sender: 'ai',
+            text: `Great! Let's start with a technical question for a ${userInput} position:\n\n"${question}"\n\nHow would you answer this?`,
+            timestamp: new Date()
+          }]);
+        } catch (error) {
+          setMessages(prev => [...prev, {
+            id: prev.length + 1,
+            sender: 'ai',
+            text: 'I\'m having trouble generating a question right now. Please try again.',
+            timestamp: new Date()
+          }]);
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
+      
+      // Generate AI response
+      setIsLoading(true);
+      try {
+        let response;
+        if (currentQuestion) {
+          // If we're in a practice session, provide feedback
+          response = await aiService.generateFeedback(
+            userInput, 
+            currentQuestion.question, 
+            targetPosition || 'software developer'
+          );
+        } else {
+          // General conversation
+          const prompt = `You are an AI interview coach helping someone prepare for a ${targetPosition || 'software developer'} position. 
+          Respond to this message: "${userInput}"
+          Provide helpful, encouraging, and professional advice.`;
+          
+          response = await aiService.generateResponse(prompt);
+        }
+        
         setMessages(prev => [...prev, {
           id: prev.length + 1,
           sender: 'ai',
-          text: 'That\'s a thoughtful question. Based on your profile and the position you\'re targeting, I recommend focusing on...',
+          text: response,
           timestamp: new Date()
         }]);
-      }, 1000);
+      } catch (error) {
+        setMessages(prev => [...prev, {
+          id: prev.length + 1,
+          sender: 'ai',
+          text: 'I\'m having trouble generating a response right now. Please try again.',
+          timestamp: new Date()
+        }]);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -366,6 +524,13 @@ const InterviewPrep = () => {
                         </span>
                       </div>
                       <p>{message.text}</p>
+                      {isLoading && message.sender === 'ai' && (
+                        <div className="flex items-center mt-2">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full mr-1 animate-bounce"></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full mr-1 animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -379,6 +544,7 @@ const InterviewPrep = () => {
                       ? 'bg-red-500 hover:bg-red-600' 
                       : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600'
                   } text-white transition-all`}
+                  disabled={isLoading}
                 >
                   {isRecording ? <Square size={20} /> : <Mic size={20} />}
                 </button>
@@ -390,17 +556,19 @@ const InterviewPrep = () => {
                     onChange={(e) => setInputMessage(e.target.value)}
                     placeholder="Ask a question or type your answer..."
                     className="w-full p-4 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                    onKeyPress={(e) => e.key === 'Enter' && !isLoading && sendMessage()}
+                    disabled={isLoading}
                   />
                   <button
                     onClick={sendMessage}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-blue-500 hover:text-blue-600"
+                    disabled={isLoading || !inputMessage.trim()}
                   >
                     <Send size={20} />
                   </button>
                 </div>
                 
-                <button className="p-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                <button className="p-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors" disabled={isLoading}>
                   <RotateCcw size={20} className="text-gray-600" />
                 </button>
               </div>

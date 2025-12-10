@@ -68,13 +68,13 @@ import SkillAnalyzer from '../pages/studentpart/SkillAnalyzer';
 import ResumeImprover from '../pages/studentpart/ResumeImprover';
 import DailyTasks from '../pages/studentpart/DailyTasks';
 import ProjectSuggestions from '../pages/studentpart/ProjectSuggestions';
+import AIProjectSuggestions from '../pages/studentpart/AIProjectSuggestions';
 import InterviewPrep from '../pages/studentpart/InterviewPrep';
 import SkillGapAnalyzer from '../pages/studentpart/SkillGapAnalyzer';
 import IndustryInsights from '../pages/studentpart/IndustryInsights';
 import StudentPortfolio from '../pages/studentpart/Portfolio';
 import MentorshipTracker from '../pages/studentpart/MentorshipTracker';
 import StudentLayout from '../layout/StudentLayout';
-
 // Public Route Component (redirects to dashboard if already logged in)
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -336,12 +336,12 @@ const AppRouter = () => {
                       <Route path="resume-improver" element={<ResumeImprover />} />
                       <Route path="daily-tasks" element={<DailyTasks />} />
                       <Route path="project-suggestions" element={<ProjectSuggestions />} />
+                      <Route path="ai-project-suggestions" element={<AIProjectSuggestions />} />
                       <Route path="interview-prep" element={<InterviewPrep />} />
                       <Route path="skill-gap" element={<SkillGapAnalyzer />} />
                       <Route path="industry-insights" element={<IndustryInsights />} />
                       <Route path="portfolio" element={<StudentPortfolio />} />
                       <Route path="mentorship-tracker" element={<MentorshipTracker />} />
-
                       <Route path="test-profile" element={<TestProfile />} />
                     </Routes>
                   </StudentLayout>
